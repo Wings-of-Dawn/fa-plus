@@ -6,14 +6,14 @@ function findSubmissions()
 {
 	// Find the thumbnails for all submissions of the types we want to open
 	var submissionThumbs = [];
-	SUBMISSION_TYPES_OPTIONS_KEYS.foreach(function (key) {
+	SUBMISSION_TYPES_OPTIONS_KEYS.forEach(function (key) {
 		if (localStorage[key] === "true")
 			submissionsThumbs.concat(document.getElementsByClass(key));
 	});
 
 	// For each thumbnail, find the reference to the corresponding submission page
 	var foundSubmissions = [];
-	submissionThumbs.foreach(function (thumb) {
+	submissionThumbs.forEach(function (thumb) {
 		// Get the container around the thumbnail
 		var submissionContainer = thumb.parentNode;
 
