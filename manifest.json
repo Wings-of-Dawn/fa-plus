@@ -1,0 +1,13 @@
+{
+	"name": "FA Spider",
+	"version": "0.1",
+	"background_page": "background.html",
+	"page_action":
+	{
+		"default_icon": "FAIcon.ico",
+		"default_title": "Open submissions in tabs"
+	},
+	"options_page": "options.html",
+	"permissions": ["tabs", "http://*.furaffinity.net/msg/submissions/*"],
+	"content_security_policy": "script-src 'self'"
+}
