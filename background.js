@@ -1,10 +1,9 @@
 function openSubmission(submission)
 {
-	//console.log(submission);
 	chrome.tabs.create({
 		url:		submission,
 		selected:	false
-	});	
+	});
 }
 
 chrome.pageAction.onClicked.addListener(function(tab) {
@@ -12,10 +11,8 @@ chrome.pageAction.onClicked.addListener(function(tab) {
 });
 
 chrome.extension.onConnect.addListener(function(port) {
-	var tab = port.sender.tab;
 	port.onMessage.addListener(function(submissions) {
-		if (submissions.length > 0)
-			submissions.forEach(openSubmission);
+		submissions.forEach(openSubmission);
 	});
 });
 
