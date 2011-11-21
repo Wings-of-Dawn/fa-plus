@@ -1,5 +1,5 @@
 var submissionsToOpen;
-var loadingTabs;
+var loadingTabs = [];
 
 function openSubmission(submission)
 {
@@ -7,10 +7,11 @@ function openSubmission(submission)
 	var newTab = chrome.tabs.create({
 		url:		submission,
 		selected:	false
+	},
+	function (newTab) {
+		// Add the tab's id to the list of tabs that are currently loading
+		loadingTabs.push(newTab.id);
 	});
-
-	// Add the tab's id to the list of tabs that are currently loading
-	loadingTabs.push(newTab.id);
 }
 
 chrome.pageAction.onClicked.addListener(function(tab) {
@@ -24,7 +25,8 @@ chrome.extension.onConnect.addListener(function(port) {
 		submissionsToOpen = submissions;
 
 		// Start opening tabs for the submissions
-		for (var i = 0; (i < localStorage["numconcurrent"]) && (submissionsToOpen.length > 0); i++)
+		//for (var i = 0; (i < localStorage["numconcurrent"]) && (submissionsToOpen.length > 0); i++)
+		for (var i = 0; i < 5; i++) // FIXME: temporary hardcoded value
 			openSubmission(submissionsToOpen.shift());
 	});
 });
@@ -40,10 +42,10 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab) {
 		chrome.pageAction.show(tabId);
 	}
 	// If the newly-loaded page is a tab opened by this extension, check if we should load the next submission
-	else if ((var index = loadingTabs.indexOf(tabId)) > -1)
+	else if (loadingTabs.indexOf(tabId) > -1)
 	{
 		// Remove the completed tab from our set of loading tabs
-		loadingTabs.splice(index, 1);
+		loadingTabs.splice(loadingTabs.indexOf(tabId), 1);
 
 		// If we have more submissions to open, start the next one
 		if (submissionsToOpen.length > 0)
