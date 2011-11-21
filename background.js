@@ -1,5 +1,5 @@
 var submissionsToOpen;
-var loadingTabs = [];
+var openTabs = [];
 
 function openSubmission(submission)
 {
@@ -10,7 +10,7 @@ function openSubmission(submission)
 	},
 	function (newTab) {
 		// Add the tab's id to the list of tabs that are currently loading
-		loadingTabs.push(newTab.id);
+		openTabs.push(newTab.id);
 	});
 }
 
@@ -41,15 +41,17 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab) {
 	{
 		chrome.pageAction.show(tabId);
 	}
-	// If the newly-loaded page is a tab opened by this extension, check if we should load the next submission
-	else if (loadingTabs.indexOf(tabId) > -1)
-	{
-		// Remove the completed tab from our set of loading tabs
-		loadingTabs.splice(loadingTabs.indexOf(tabId), 1);
+});
 
-		// If we have more submissions to open, start the next one
-		if (submissionsToOpen.length > 0)
+chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
+	// Check if the closed tab is one of the submission pages we've opened
+	if (openTabs.indexOf(tabId) > -1)
+	{
+		// Remove that tab from the list of open tabs
+		openTabs.splice(openTabs.indexOf(tabId), 1);
+
+		// If the window is still open, and we have more submissions to display, open another
+		if (!removeInfo.isWindowClosing && (submissionsToOpen.length > 0))
 			openSubmission(submissionsToOpen.shift());
 	}
 });
-
