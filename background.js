@@ -25,8 +25,7 @@ chrome.extension.onConnect.addListener(function(port) {
 		submissionsToOpen = submissions;
 
 		// Start opening tabs for the submissions
-		//for (var i = 0; (i < localStorage["numconcurrent"]) && (submissionsToOpen.length > 0); i++)
-		for (var i = 0; i < 5; i++) // FIXME: temporary hardcoded value
+		for (var i = 0; (i < getOptionValue(OPTIONS.TAB_COUNT)) && (submissionsToOpen.length > 0); i++)
 			openSubmission(submissionsToOpen.shift());
 	});
 });

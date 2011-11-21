@@ -1,0 +1,99 @@
+var OPTION_TYPE = {
+    BOOLEAN:    0,
+    INTEGER:    1,
+    FLOAT:      2,
+    STRING:     3
+};
+var OPTIONS = {
+    OPEN_GENERAL: {
+        key:            "general",
+        type:           OPTION_TYPE.BOOLEAN,
+        defaultValue:   true
+    },
+    OPEN_MATURE: {
+        key:            "mature",
+        type:           OPTION_TYPE.BOOLEAN,
+        defaultValue:   true
+    },
+    OPEN_ADULT: {
+        key:            "adult",
+        type:           OPTION_TYPE.BOOLEAN,
+        defaultValue:   true
+    },
+    TAB_COUNT: {
+        key:            "tab-count",
+        type:           OPTION_TYPE.INTEGER,
+        defaultValue:   5
+    },
+    AUTO_REMOVE: {
+        key:            "auto-remove",
+        type:           OPTION_TYPE.BOOLEAN,
+        defaultValue:   false
+    }
+};
+
+// For convenient enumeration:
+var ALL_OPTIONS = [
+    OPTIONS.OPEN_GENERAL,
+    OPTIONS.OPEN_MATURE,
+    OPTIONS.OPEN_ADULT,
+    OPTIONS.TAB_COUNT,
+    OPTIONS.AUTO_REMOVE
+];
+
+function getOptionValue(option)
+{
+    // Load the option value from localStorage
+    var value = localStorage[option.key];
+
+    // If the value doesn't exist, set to default
+    if (!value)
+    {
+        value = option.defaultValue;
+        localStorage[option.key] = option.defaultValue;
+    }
+
+    // Convert to the appropriate type, if necessary
+    switch (option.type)
+    {
+        case OPTION_TYPE.BOOLEAN:
+        {
+            // Check if the value is boolean "false", or a string representation thereof
+            if (!value || (value === "false"))
+                value = false;
+            else
+                value = true;
+            break;
+        }
+        case OPTION_TYPE.INTEGER:
+        {
+            value = parseInt(value);
+            break;
+        }
+        case OPTION_TYPE.FLOAT:
+        {
+            value = parseFloat(value);
+            break;
+        }
+        default:
+            break;
+    }
+
+    // Return the value
+    return value;
+}
+
+function setOptionValue(option, value)
+{
+    localStorage[option.key] = value;
+}
+
+function getOptionElementProperty(option)
+{
+    switch (option.type)
+    {
+        case OPTION_TYPE.BOOLEAN:
+            return "checked";
+    }
+    return "value";
+}
