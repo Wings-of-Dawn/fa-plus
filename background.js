@@ -1,6 +1,16 @@
 var submissionsToOpen;
 var openTabs = [];
 
+function submissionsReceived(submissions)
+{
+    // Make this our new list of submissions to open
+    submissionsToOpen = submissions;
+
+    // Start opening submissions in tabs
+    for (var i = 0; (i < getOptionValue(OPTIONS.TAB_COUNT)) && (submissionsToOpen.length > 0); i++)
+        openSubmission(submissionsToOpen.shift());
+}
+
 function openSubmission(submission)
 {
 	// Create a new tab to display the submission page
@@ -15,19 +25,23 @@ function openSubmission(submission)
 }
 
 chrome.pageAction.onClicked.addListener(function(tab) {
-	chrome.tabs.executeScript(tab.id, {file: "content_script.js"});
-});
+    // Invoke the content script on this tab
+	chrome.tabs.executeScript(tab.id, {file: "content_script.js"}, function () {
+        // After the content script has loaded, prepare a request for submissions
+        var types = [];
+        if (getOptionValue(OPTIONS.OPEN_GENERAL))
+            types.push(OPTIONS.OPEN_GENERAL.key);
+        if (getOptionValue(OPTIONS.OPEN_MATURE))
+            types.push(OPTIONS.OPEN_MATURE.key);
+        if (getOptionValue(OPTIONS.OPEN_ADULT))
+            types.push(OPTIONS.OPEN_ADULT.key);
 
-chrome.extension.onConnect.addListener(function(port) {
-	// Set up a listener to receive a list of submission-page links from the content script
-	port.onMessage.addListener(function(submissions) {
-		// Hold a reference to the submissions
-		submissionsToOpen = submissions;
-
-		// Start opening tabs for the submissions
-		for (var i = 0; (i < getOptionValue(OPTIONS.TAB_COUNT)) && (submissionsToOpen.length > 0); i++)
-			openSubmission(submissionsToOpen.shift());
-	});
+        // Send the request, including a callback
+        chrome.tabs.sendRequest(
+            tab.id,
+            {submissionTypes: types},
+            submissionsReceived);
+    });
 });
 
 chrome.tabs.onUpdated.addListener(function(tabId, change, tab) {
