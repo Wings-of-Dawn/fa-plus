@@ -4,7 +4,7 @@
 	"background_page": "background.html",
 	"page_action":
 	{
-		"default_icon": "FAIcon.ico",
+		"default_icon": "FAIcon.png",
 		"default_title": "Open submissions in tabs"
 	},
 	"options_page": "options_page.html",
