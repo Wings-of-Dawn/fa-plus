@@ -2,18 +2,22 @@ var submissionsToOpen = [];
 var submissionsTab;
 var openTabs = [];
 
-function showCancelIcon(show)
+var ICON = {
+    ICON_NORMAL:    {
+        path:   "FAIcon.png",
+        title:  "Open submissions in tabs"
+    },
+    ICON_CANCEL:    {
+        path:   "FAIconCancel.png",
+        title:  "Stop opening submissions"
+    }
+};
+
+function showPageAction(tabId, icon)
 {
-    if (show)
-    {
-        chrome.pageAction.setIcon({tabId: submissionsTab, path: "FAIconCancel.png"});
-        chrome.pageAction.setTitle({tabId: submissionsTab, title: "Stop opening submissions"});
-    }
-    else
-    {
-        chrome.pageAction.setIcon({tabId: submissionsTab, path: "FAIcon.png"});
-        chrome.pageAction.setTitle({tabId: submissionsTab, title: "Open submissions in tabs"});
-    }
+    chrome.pageAction.setIcon({tabId: tabId, path: icon.path});
+    chrome.pageAction.setTitle({tabId: tabId, title: icon.title});
+    chrome.pageAction.show(tabId);
 }
 
 function submissionsReceived(submissions)
@@ -27,7 +31,7 @@ function submissionsReceived(submissions)
 
     // If there are more submissions to be opened, give the user the option of stopping them from opening
     if (submissionsToOpen.length > 0)
-        showCancelIcon(true);
+        showPageAction(submissionsTab, ICON.ICON_CANCEL);
 }
 
 function openSubmission(submission)
@@ -38,8 +42,12 @@ function openSubmission(submission)
         selected:   false
     },
     function (newTab) {
-        // Add the tab's id to the list of tabs that are currently loading
+        // Add the tab's id to the list of tabs that are loading or open
         openTabs.push(newTab.id);
+
+        // Display an icon to cancel opening more tabs, if applicable
+        if (submissionsToOpen.length > 0)
+            showPageAction(newTab.id, ICON.ICON_CANCEL);
     });
 }
 
@@ -72,7 +80,7 @@ chrome.pageAction.onClicked.addListener(function(tab) {
         submissionsToOpen = [];
 
         // Restore the original icon
-        showCancelIcon(false);
+        showPageAction(submissionsTab, ICON.ICON_NORMAL);
     }
 });
 
@@ -84,7 +92,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab) {
     // If we've just loaded a page with submission thumbnails, show the "open all" icon
     if (tab.url.indexOf(".furaffinity.net/msg/submissions") !== -1)
     {
-        chrome.pageAction.show(tabId);
+        showPageAction(tabId, ICON.ICON_NORMAL);
         submissionsTab = tabId;
     }
 });
@@ -100,8 +108,14 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
         if (!removeInfo.isWindowClosing && (submissionsToOpen.length > 0))
             openSubmission(submissionsToOpen.shift());
 
-        // If there are no more submissions to open, restore the original icon
+        // If there are no more submissions to open, change the page action icons
         if (submissionsToOpen.length === 0)
-            showCancelIcon(false);
+        {
+            // Restore the default icon on the submissions tab
+            showPageAction(submissionsTab, ICON.ICON_NORMAL);
+
+            // Remove the "cancel" icons from the other tabs
+            openTabs.forEach(chrome.pageAction.hide);
+        }
     }
 });
