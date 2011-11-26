@@ -5,7 +5,7 @@ chrome.extension.onRequest.addListener(function (request, sender, sendResponse) 
 function findSubmissions(submissionTypes)
 {
     var SUBMISSION_THUMB_CLASS_NAME = "thumb-overlay";
-	var foundSubmissions = [];
+    var foundSubmissions = [];
 
     // Find the thumbnail-container elements for all submissions on the page
     var submissionThumbs = document.getElementsByClassName(SUBMISSION_THUMB_CLASS_NAME);
@@ -37,5 +37,5 @@ function findSubmissions(submissionTypes)
         foundSubmissions.push(anchors[0].href);
     }
 
-	return foundSubmissions;
+    return foundSubmissions;
 }
