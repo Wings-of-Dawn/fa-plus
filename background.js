@@ -82,7 +82,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab) {
         return;
 
     // If we've just loaded a page with submission thumbnails, show the "open all" icon
-    if (tab.url.indexOf(".furaffinity.net/msg/submissions") != -1)
+    if (tab.url.indexOf(".furaffinity.net/msg/submissions") !== -1)
     {
         chrome.pageAction.show(tabId);
         submissionsTab = tabId;
