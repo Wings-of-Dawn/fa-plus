@@ -44,10 +44,6 @@ function openSubmission(submission)
     function (newTab) {
         // Add the tab's id to the list of tabs that are loading or open
         openTabs.push(newTab.id);
-
-        // Display an icon to cancel opening more tabs, if applicable
-        if (submissionsToOpen.length > 0)
-            showPageAction(newTab.id, ICON.ICON_CANCEL);
     });
 }
 
@@ -79,8 +75,12 @@ chrome.pageAction.onClicked.addListener(function(tab) {
         // Clear the list of submissions
         submissionsToOpen = [];
 
-        // Restore the original icon
+        // Restore the original icon on the submissions tab
         showPageAction(submissionsTab, ICON.ICON_NORMAL);
+
+        // Remove the "cancel" icon from all open tabs
+        // FIXME: broken?
+        openTabs.forEach(chrome.pageAction.hide);
     }
 });
 
@@ -95,6 +95,10 @@ chrome.tabs.onUpdated.addListener(function(tabId, change, tab) {
         showPageAction(tabId, ICON.ICON_NORMAL);
         submissionsTab = tabId;
     }
+
+    // If we've just opened a new tab for a submission, display the "cancel opening tabs" icon
+    if ((openTabs.indexOf(tabId) >= 0) && (submissionsToOpen.length > 0))
+        showPageAction(tabId, ICON.ICON_CANCEL);
 });
 
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
