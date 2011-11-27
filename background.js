@@ -20,6 +20,18 @@ function showPageAction(tabId, icon)
     chrome.pageAction.show(tabId);
 }
 
+function restoreDefaultActions()
+{
+    // Restore the original icon on the submissions tab
+    showPageAction(submissionsTab, ICON.ICON_NORMAL);
+
+    // Remove the "cancel" icon from all open tabs
+    openTabs.forEach(function (tabId) {
+        // I'm not sure why, but this call needs to be wrapped in an anonymous function; probably hidden arguments confused by additional parameters passed by forEach()
+        chrome.pageAction.hide(tabId);
+    });
+}
+
 function submissionsReceived(submissions)
 {
     // Make this our new list of submissions to open
@@ -75,12 +87,8 @@ chrome.pageAction.onClicked.addListener(function(tab) {
         // Clear the list of submissions
         submissionsToOpen = [];
 
-        // Restore the original icon on the submissions tab
-        showPageAction(submissionsTab, ICON.ICON_NORMAL);
-
-        // Remove the "cancel" icon from all open tabs
-        // FIXME: broken?
-        openTabs.forEach(chrome.pageAction.hide);
+        // Reset page-action icons
+        restoreDefaultActions();
     }
 });
 
@@ -108,18 +116,16 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
         // Remove that tab from the list of open tabs
         openTabs.splice(openTabs.indexOf(tabId), 1);
 
-        // If the window is still open, and we have more submissions to display, open another
-        if (!removeInfo.isWindowClosing && (submissionsToOpen.length > 0))
+        // If the window is closing, there's nothing more for us to do
+        if (removeInfo.isWindowClosing)
+            return;
+
+        // If there are more submissions to open, open the next one
+        if (submissionsToOpen.length > 0)
             openSubmission(submissionsToOpen.shift());
-
-        // If there are no more submissions to open, change the page action icons
-        if (submissionsToOpen.length === 0)
-        {
-            // Restore the default icon on the submissions tab
-            showPageAction(submissionsTab, ICON.ICON_NORMAL);
-
-            // Remove the "cancel" icons from the other tabs
-            openTabs.forEach(chrome.pageAction.hide);
-        }
+        // Otherwise, change the page action icons back to their "empty queue" state
+        else
+            restoreDefaultActions();
     }
 });
+
