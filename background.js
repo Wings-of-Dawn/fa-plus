@@ -123,8 +123,9 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
         // If there are more submissions to open, open the next one
         if (submissionsToOpen.length > 0)
             openSubmission(submissionsToOpen.shift());
-        // Otherwise, change the page action icons back to their "empty queue" state
-        else
+
+        // If this was the last submission, change the page action icons back to their "empty queue" state
+        if (submissionsToOpen.length === 0)
             restoreDefaultActions();
     }
 });
