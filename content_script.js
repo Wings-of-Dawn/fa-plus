@@ -1,6 +1,76 @@
-chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
-    sendResponse(findSubmissions(request.submissionTypes));
+var INJECTED_DIV_CLASS = "actions";
+var INJECTED_DIV_BUTTONS = [
+    {
+        classes:    "button general-button",
+        text:       "Select General",
+        handler:    "selectGeneralSubmissions"
+    },
+    {
+        classes:    "button mature-button",
+        text:       "Select Mature",
+        handler:    "selectMatureSubmissions"
+    },
+    {
+        classes:    "button adult-button",
+        text:       "Select Adult",
+        handler:    "selectAdultSubmissions"
+    },
+    {
+        classes:    "button open-button",
+        text:       "Open Selected",
+        handler:    "openSelectedSubmissions"
+    }
+];
+
+//  Create a div containing the buttons we want to add
+var newDiv = document.createElement("div");
+newDiv.setAttribute("class", INJECTED_DIV_CLASS);
+INJECTED_DIV_BUTTONS.forEach(function (buttonData) {
+    // Create a button element
+    var button = document.createElement("input");
+    button.setAttribute("class", buttonData.classes);
+    button.setAttribute("type", "button");
+    button.setAttribute("value", buttonData.text);
+
+    // Add a click handler
+    button.addEventListener("click", window[buttonData.handler], false);
+
+    // Add the button to the new div
+    newDiv.appendChild(button);
 });
+
+// Find the first "actions" div in the messages-list form
+var MESSAGES_FORM_ID = "messages-form";
+var messageForm = document.getElementById(MESSAGES_FORM_ID);
+var ACTIONS_DIV_CLASS = "actions";
+var actionsDiv = messageForm.getElementsByClassName(ACTIONS_DIV_CLASS)[0];
+
+// Add our div before it
+messageForm.insertBefore(newDiv, actionsDiv);
+
+//chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
+//    sendResponse(findSubmissions(request.submissionTypes));
+//});
+
+function selectGeneralSubmissions()
+{
+    console.log("DEBUG: select general");
+}
+
+function selectMatureSubmissions()
+{
+    console.log("DEBUG: select mature");
+}
+
+function selectAdultSubmissions()
+{
+    console.log("DEBUG: select adult");
+}
+
+function openSelectedSubmissions()
+{
+    console.log("DEBUG: open selected");
+}
 
 function findSubmissions(submissionTypes)
 {
