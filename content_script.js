@@ -48,23 +48,55 @@ var actionsDiv = messageForm.getElementsByClassName(ACTIONS_DIV_CLASS)[0];
 // Add our div before it
 messageForm.insertBefore(newDiv, actionsDiv);
 
-//chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
-//    sendResponse(findSubmissions(request.submissionTypes));
-//});
-
 function selectGeneralSubmissions()
 {
-    console.log("DEBUG: select general");
+    var GENERAL_THUMB_CLASS_NAME = "general";
+    selectSubmissionsOfType(GENERAL_THUMB_CLASS_NAME);
 }
 
 function selectMatureSubmissions()
 {
-    console.log("DEBUG: select mature");
+    var MATURE_THUMB_CLASS_NAME = "mature";
+    selectSubmissionsOfType(MATURE_THUMB_CLASS_NAME);
 }
 
 function selectAdultSubmissions()
 {
-    console.log("DEBUG: select adult");
+    var ADULT_THUMB_CLASS_NAME = "adult";
+    selectSubmissionsOfType(ADULT_THUMB_CLASS_NAME);
+}
+
+function selectSubmissionsOfType(type)
+{
+    console.log("DEBUG: selecting submissions marked \"" + type + "\"");
+
+    // Find containers for elements of the specified type
+    var containers = findContainersForSubmissionType(type);
+
+    // Find and check the checkbox in each container
+    var INPUT_ELEMENT_TYPE_TAG = "input";
+    var CHECKBOX_ELEMENT_TYPE = "checkbox";
+    containers.forEach(function (containerElement) {
+        // Find input elements of the correct type in the container
+        var inputElements = containerElement.getElementsByTagName(INPUT_ELEMENT_TYPE_TAG);
+        var checkboxes = [];
+        for (var i = 0; i < inputElements.length; i++)
+        {
+            var inputElement = inputElements[i];
+            if (inputElement.type.toLowerCase() == CHECKBOX_ELEMENT_TYPE)
+                checkboxes.push(inputElement);
+        }
+
+        // Check that at least one such element exists
+        if (checkboxes.length !== 1)
+            console.warn("unexpected number of checkbox elements in container: " + checkboxes.length + " (expected 1)");
+
+        // Check the checkbox (or checkboxes, if we found more than one)
+        checkboxes.forEach(function (checkbox) {
+            if (!checkbox.checked)
+                checkbox.click();
+        });
+    });
 }
 
 function openSelectedSubmissions()
@@ -72,40 +104,47 @@ function openSelectedSubmissions()
     console.log("DEBUG: open selected");
 }
 
-function findSubmissions(submissionTypes)
+function findContainersForSubmissionType(type)
 {
     var SUBMISSION_THUMB_CLASS_NAME = "thumb-overlay";
-    var foundSubmissions = [];
+    var foundContainers = [];
+    var lowercaseType = type.toLowerCase();
 
     // Find the thumbnail-container elements for all submissions on the page
     var submissionThumbs = document.getElementsByClassName(SUBMISSION_THUMB_CLASS_NAME);
 
-    // For each thumbnail, check if it passes our filter, and find the reference to the corresponding submission page
+    // For each thumbnail, check if it is the correct type, and if so, get its list-item container element
     for (var i = 0; i < submissionThumbs.length; i++)
     {
         // Check if the thumbnail's classes include one of the allowed submission types
         var thumbnail = submissionThumbs[i];
-        var allowed = submissionTypes.some(function (type) {
-            return (thumbnail.className.indexOf(type) > 0);
-        });
-        if (!allowed)
+        if (thumbnail.className.toLowerCase().indexOf(lowercaseType) < 0)
             continue;
 
-        // Get the container around the thumbnail
-        var submissionContainer = thumbnail.parentNode;
-
-        // Find all anchor (link) elements in the container node (should be exactly 1)
-        var anchors = submissionContainer.getElementsByTagName('a');
-        if (anchors.length !== 1)
+        // Find the submission's list-item
+        var container = findSubmissionContainer(thumbnail);
+        if (!container)
         {
-            console.warn("Unexpected number of anchor elements in submission container element: " + anchors.length + " (expected 1)");
-            if (anchors.length < 1)
-                continue;
+            console.warn("no submission container found for submission thumbnail:");
+            console.warn(thumbnail);
+            continue;
         }
 
-        // Add the first anchor found to the list of submission-page links to open
-        foundSubmissions.push(anchors[0].href);
+        // Add the container to the list
+        foundContainers.push(container);
     }
-
-    return foundSubmissions;
+    return foundContainers;
 }
+
+function findSubmissionContainer(submissionElement)
+{
+    var SUBMISSION_CONTAINER_ELEMENT_TYPE_TAG = "li";
+    var currentElement = submissionElement;
+    while (currentElement = currentElement.parentNode)
+    {
+        if (currentElement.tagName.toLowerCase() == SUBMISSION_CONTAINER_ELEMENT_TYPE_TAG)
+            return currentElement;
+    }
+    return null;
+}
+
