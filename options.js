@@ -5,21 +5,6 @@ var OPTION_TYPE = {
     STRING:     3
 };
 var OPTIONS = {
-    OPEN_GENERAL: {
-        key:            "general",
-        type:           OPTION_TYPE.BOOLEAN,
-        defaultValue:   true
-    },
-    OPEN_MATURE: {
-        key:            "mature",
-        type:           OPTION_TYPE.BOOLEAN,
-        defaultValue:   true
-    },
-    OPEN_ADULT: {
-        key:            "adult",
-        type:           OPTION_TYPE.BOOLEAN,
-        defaultValue:   true
-    },
     TAB_COUNT: {
         key:            "tab-count",
         type:           OPTION_TYPE.INTEGER,
@@ -34,9 +19,6 @@ var OPTIONS = {
 
 // For convenient enumeration:
 var ALL_OPTIONS = [
-    OPTIONS.OPEN_GENERAL,
-    OPTIONS.OPEN_MATURE,
-    OPTIONS.OPEN_ADULT,
     OPTIONS.TAB_COUNT,
     OPTIONS.AUTO_REMOVE
 ];
