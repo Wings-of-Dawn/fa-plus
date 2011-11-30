@@ -22,6 +22,8 @@ var INJECTED_DIV_BUTTONS = [
     }
 ];
 
+var INPUT_ELEMENT_TYPE_TAG = "input";
+
 //  Create a div containing the buttons we want to add
 var newDiv = document.createElement("div");
 newDiv.setAttribute("class", INJECTED_DIV_CLASS);
@@ -74,8 +76,6 @@ function selectSubmissionsOfType(type)
     var containers = findContainersForSubmissionType(type);
 
     // Find and check the checkbox in each container
-    var INPUT_ELEMENT_TYPE_TAG = "input";
-    var CHECKBOX_ELEMENT_TYPE = "checkbox";
     containers.forEach(function (containerElement) {
         // Find input elements of the correct type in the container
         var inputElements = containerElement.getElementsByTagName(INPUT_ELEMENT_TYPE_TAG);
@@ -83,7 +83,7 @@ function selectSubmissionsOfType(type)
         for (var i = 0; i < inputElements.length; i++)
         {
             var inputElement = inputElements[i];
-            if (inputElement.type.toLowerCase() == CHECKBOX_ELEMENT_TYPE)
+            if (isCheckbox(inputElement))
                 checkboxes.push(inputElement);
         }
 
@@ -102,6 +102,7 @@ function selectSubmissionsOfType(type)
 function openSelectedSubmissions()
 {
     console.log("DEBUG: open selected");
+    console.log(findSelectedSubmissions());
 }
 
 function findContainersForSubmissionType(type)
@@ -124,16 +125,47 @@ function findContainersForSubmissionType(type)
         // Find the submission's list-item
         var container = findSubmissionContainer(thumbnail);
         if (!container)
-        {
-            console.warn("no submission container found for submission thumbnail:");
-            console.warn(thumbnail);
             continue;
-        }
 
         // Add the container to the list
         foundContainers.push(container);
     }
     return foundContainers;
+}
+
+function findSelectedSubmissions()
+{
+    // Find all input elements on the page
+    var inputElements = document.getElementsByTagName(INPUT_ELEMENT_TYPE_TAG);
+
+    // Use this list to find submissions whose checkbox is checked
+    var foundSubmissions = [];
+    for (var i = 0; i < inputElements.length; i++)
+    {
+        var inputElement = inputElements[i];
+        if (!isCheckbox(inputElement) || !inputElement.checked)
+            continue;
+
+        // Find the checkbox's container
+        var container = findSubmissionContainer(inputElement);
+        if (!container)
+            continue;
+
+        // Find the anchor referring to the submission in the container
+        var submission = getSubmissionFromContainer(container);
+        if (!submission)
+            continue;
+
+        // Add the reference to the list
+        foundSubmissions.push(submission);
+    }
+    return foundSubmissions;
+}
+
+function isCheckbox(inputElement)
+{
+    var CHECKBOX_ELEMENT_TYPE = "checkbox";
+    return (inputElement.type.toLowerCase() == CHECKBOX_ELEMENT_TYPE);
 }
 
 function findSubmissionContainer(submissionElement)
@@ -145,6 +177,24 @@ function findSubmissionContainer(submissionElement)
         if (currentElement.tagName.toLowerCase() == SUBMISSION_CONTAINER_ELEMENT_TYPE_TAG)
             return currentElement;
     }
+    console.warn("no submission-list container element found for element:");
+    console.warn(submissionElement);
     return null;
+}
+
+function getSubmissionFromContainer(containerElement)
+{
+    var SUBMISSION_REFERENCE_ELEMENT_TYPE_TAG = "a";
+    var foundReferences = containerElement.getElementsByTagName(SUBMISSION_REFERENCE_ELEMENT_TYPE_TAG);
+    var count = foundReferences.length;
+    if (count !== 2)
+    {
+        console.warn("unexpected number of anchor tags in container: " + count + " (expected 2)");
+        if (count < 1)
+            return null;
+    }
+
+    // We expect the first anchor to refer to the submission, and the second to it's submitter
+    return foundReferences[0];
 }
 
