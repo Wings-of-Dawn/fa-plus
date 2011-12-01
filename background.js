@@ -5,11 +5,11 @@ var openTabs = [];
 var ICON = {
     ICON_NORMAL:    {
         path:   "FAIcon.png",
-        title:  "Open submissions in tabs"
+        title:  "Click to open all submissions"
     },
     ICON_CANCEL:    {
         path:   "FAIconCancel.png",
-        title:  "Stop opening submissions"
+        title:  "Click to stop opening new submissions"
     }
 };
 

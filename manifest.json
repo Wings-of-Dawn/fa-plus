@@ -1,22 +1,22 @@
 {
-	"name": "FA Spider",
-	"version": "0.1",
-	"background_page": "background.html",
-	"page_action":
-	{
-		"default_icon":     "FAIcon.png",
-		"default_title":    "Open submissions in tabs"
-	},
+    "name": "FA Spider",
+    "version": "0.1",
+    "background_page": "background.html",
+    "page_action":
+    {
+        "default_icon":     "FAIcon.png",
+        "default_title":    "Click to open all submissions"
+    },
     "content_scripts":
     [
         {
-            "matches":  ["http://*.furaffinity.net/msg/submissions/*",
-                        "https://*.furaffinity.net/msg/submissions/*"],
+            "matches":  ["http://*.furaffinity.net/msg/submissions*",
+                         "https://*.furaffinity.net/msg/submissions*"],
             "js":       ["content_script.js"]
         }
     ],
-	"options_page": "options_page.html",
-	"permissions": ["tabs"],
-	"content_security_policy": "script-src 'self'"
+    "options_page": "options_page.html",
+    "permissions": ["tabs"],
+    "content_security_policy": "script-src 'self'"
 }
 
