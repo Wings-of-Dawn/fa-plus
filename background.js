@@ -59,27 +59,37 @@ function openSubmission(submission)
     });
 }
 
-chrome.pageAction.onClicked.addListener(function(tab) {
+chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
+    switch (request.type)
+    {
+        case "showPageAction":
+            // Content script has found a tab with submissions; display the page action
+            showPageAction(sender.tab.id, ICON.ICON_NORMAL);
+
+            // Note which tab is the submissions page
+            submissionsTab = sender.tab.id;
+
+            break;
+        case "openSubmissions":
+            // Request from content script to open a collection of submissions
+            submissionsReceived(request.submissions);
+            break;
+        default:
+            // Unknown
+            console.warn("unknown request type received: " + request.type);
+            break;
+    }
+});
+
+chrome.pageAction.onClicked.addListener(function (tab) {
     // If there are no tabs to be opened, run the content script to find submissions to open
     if (submissionsToOpen.length === 0)
     {
-        // Invoke the content script on this tab
-        chrome.tabs.executeScript(tab.id, {file: "content_script.js"}, function () {
-            // After the content script has loaded, prepare a request for submissions
-            var types = [];
-            if (getOptionValue(OPTIONS.OPEN_GENERAL))
-                types.push(OPTIONS.OPEN_GENERAL.key);
-            if (getOptionValue(OPTIONS.OPEN_MATURE))
-                types.push(OPTIONS.OPEN_MATURE.key);
-            if (getOptionValue(OPTIONS.OPEN_ADULT))
-                types.push(OPTIONS.OPEN_ADULT.key);
-
             // Send the request, including a callback
             chrome.tabs.sendRequest(
                 tab.id,
-                {submissionTypes: types},
+                {type: "getSubmissions"},
                 submissionsReceived);
-        });
     }
     // If we are in the process of opening submissions, stop doing so
     else
@@ -92,17 +102,10 @@ chrome.pageAction.onClicked.addListener(function(tab) {
     }
 });
 
-chrome.tabs.onUpdated.addListener(function(tabId, change, tab) {
+chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
     // We're only interested in pages that have completely loaded
     if (change.status !== "complete")
         return;
-
-    // If we've just loaded a page with submission thumbnails, show the "open all" icon
-    if (tab.url.indexOf(".furaffinity.net/msg/submissions") !== -1)
-    {
-        showPageAction(tabId, ICON.ICON_NORMAL);
-        submissionsTab = tabId;
-    }
 
     // If we've just opened a new tab for a submission, display the "cancel opening tabs" icon
     if ((openTabs.indexOf(tabId) >= 0) && (submissionsToOpen.length > 0))

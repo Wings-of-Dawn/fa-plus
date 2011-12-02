@@ -50,6 +50,24 @@ var actionsDiv = messageForm.getElementsByClassName(ACTIONS_DIV_CLASS)[0];
 // Add our div before it
 messageForm.insertBefore(newDiv, actionsDiv);
 
+// Tell the extension to show the page action icon
+chrome.extension.sendRequest({type: "showPageAction"});
+
+// Listen for requests from the extension
+chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
+    switch (request.type)
+    {
+        case "getSubmissions":
+            // Page action clicked: find and open all submissions on the page
+            sendResponse(findAllSubmissions());
+            break;
+        default:
+            // Unknown
+            console.warn("unknown request type received: " + request.type);
+            break;
+    }
+});
+
 function selectGeneralSubmissions()
 {
     var GENERAL_THUMB_CLASS_NAME = "general";
@@ -70,8 +88,6 @@ function selectAdultSubmissions()
 
 function selectSubmissionsOfType(type)
 {
-    console.log("DEBUG: selecting submissions marked \"" + type + "\"");
-
     // Find containers for elements of the specified type
     var containers = findContainersForSubmissionType(type);
 
@@ -101,18 +117,47 @@ function selectSubmissionsOfType(type)
 
 function openSelectedSubmissions()
 {
-    console.log("DEBUG: open selected");
-    console.log(findSelectedSubmissions());
+    // Send the list of selected submissions to the extension to be opened
+    chrome.extension.sendRequest({
+        type:           "openSubmissions",
+        submissions:    findSelectedSubmissions()
+    });
+}
+
+function findSubmissionThumbnails()
+{
+    var SUBMISSION_THUMB_CLASS_NAME = "thumb-overlay";
+    return document.getElementsByClassName(SUBMISSION_THUMB_CLASS_NAME);
+}
+
+function findAllSubmissions()
+{
+    // Find all submission thumbnails
+    var submissionThumbs = findSubmissionThumbnails();
+
+    // Find the submission reference corresponding to each thumbnail
+    var foundSubmissions = [];
+    for (var i = 0; i < submissionThumbs.length; i++)
+    {
+        var thumb = submissionThumbs[i];
+        var container = findSubmissionContainer(thumb);
+        if (!container)
+            continue;
+        var submission = getSubmissionFromContainer(container);
+        if (!submission)
+            continue;
+        foundSubmissions.push(submission);
+    }
+    return foundSubmissions;
 }
 
 function findContainersForSubmissionType(type)
 {
-    var SUBMISSION_THUMB_CLASS_NAME = "thumb-overlay";
     var foundContainers = [];
     var lowercaseType = type.toLowerCase();
 
-    // Find the thumbnail-container elements for all submissions on the page
-    var submissionThumbs = document.getElementsByClassName(SUBMISSION_THUMB_CLASS_NAME);
+    // Find the thumbnails for all submissions on the page
+    var submissionThumbs = findSubmissionThumbnails();
 
     // For each thumbnail, check if it is the correct type, and if so, get its list-item container element
     for (var i = 0; i < submissionThumbs.length; i++)
@@ -195,6 +240,6 @@ function getSubmissionFromContainer(containerElement)
     }
 
     // We expect the first anchor to refer to the submission, and the second to it's submitter
-    return foundReferences[0];
+    return foundReferences[0].href;
 }
 
