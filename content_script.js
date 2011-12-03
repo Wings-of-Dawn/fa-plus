@@ -1,5 +1,5 @@
-var INJECTED_DIV_CLASS = "actions";
-var INJECTED_DIV_BUTTONS = [
+var ACTIONS_DIV_CLASS = "actions";
+var SELECTION_BUTTONS = [
     {
         classes:    "button general-button",
         text:       "Check General",
@@ -14,7 +14,9 @@ var INJECTED_DIV_BUTTONS = [
         classes:    "button adult-button",
         text:       "Check Adult",
         handler:    "selectAdultSubmissions"
-    },
+    }
+];
+var ACTION_BUTTONS = [
     {
         classes:    "button open-button",
         text:       "Open Checked",
@@ -24,21 +26,16 @@ var INJECTED_DIV_BUTTONS = [
 
 var INPUT_ELEMENT_TYPE_TAG = "input";
 
-//  Create a div containing the buttons we want to add
-var newDiv = document.createElement("div");
-newDiv.setAttribute("class", INJECTED_DIV_CLASS);
-INJECTED_DIV_BUTTONS.forEach(function (buttonData) {
-    // Create a button element
-    var button = document.createElement("input");
-    button.setAttribute("class", buttonData.classes);
-    button.setAttribute("type", "button");
-    button.setAttribute("value", buttonData.text);
-
-    // Add a click handler
-    button.addEventListener("click", window[buttonData.handler], false);
-
-    // Add the button to the new div
-    newDiv.appendChild(button);
+//  Create divs containing the buttons we want to add
+var selectionButtons = document.createElement("div");
+selectionButtons.setAttribute("class", ACTIONS_DIV_CLASS);
+SELECTION_BUTTONS.forEach(function (buttonData) {
+    makeButton(buttonData, selectionButtons);
+});
+var actionButtons = document.createElement("div");
+actionButtons.setAttribute("class", ACTIONS_DIV_CLASS);
+ACTION_BUTTONS.forEach(function (buttonData) {
+    makeButton(buttonData, actionButtons);
 });
 
 // Find the first "actions" div in the messages-list form
@@ -47,8 +44,9 @@ var messageForm = document.getElementById(MESSAGES_FORM_ID);
 var ACTIONS_DIV_CLASS = "actions";
 var actionsDiv = messageForm.getElementsByClassName(ACTIONS_DIV_CLASS)[0];
 
-// Add our div before it
-messageForm.insertBefore(newDiv, actionsDiv);
+// Add the selection buttons before it, and the action buttons after it
+messageForm.insertBefore(selectionButtons, actionsDiv);
+messageForm.insertBefore(actionButtons, actionsDiv.nextSibling);
 
 // Tell the extension to show the page action icon
 chrome.extension.sendRequest({type: "showPageAction"});
@@ -67,6 +65,20 @@ chrome.extension.onRequest.addListener(function (request, sender, sendResponse) 
             break;
     }
 });
+
+function makeButton(buttonData, container) {
+    // Create a button element
+    var button = document.createElement("input");
+    button.setAttribute("class", buttonData.classes);
+    button.setAttribute("type", "button");
+    button.setAttribute("value", buttonData.text);
+
+    // Add a click handler
+    button.addEventListener("click", window[buttonData.handler], false);
+
+    // Add the button to the new div
+    container.appendChild(button);
+}
 
 function selectGeneralSubmissions()
 {
