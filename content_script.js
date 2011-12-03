@@ -2,22 +2,22 @@ var INJECTED_DIV_CLASS = "actions";
 var INJECTED_DIV_BUTTONS = [
     {
         classes:    "button general-button",
-        text:       "Select General",
+        text:       "Check General",
         handler:    "selectGeneralSubmissions"
     },
     {
         classes:    "button mature-button",
-        text:       "Select Mature",
+        text:       "Check Mature",
         handler:    "selectMatureSubmissions"
     },
     {
         classes:    "button adult-button",
-        text:       "Select Adult",
+        text:       "Check Adult",
         handler:    "selectAdultSubmissions"
     },
     {
         classes:    "button open-button",
-        text:       "Open Selected",
+        text:       "Open Checked",
         handler:    "openSelectedSubmissions"
     }
 ];
