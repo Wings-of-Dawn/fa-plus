@@ -1,0 +1,12 @@
+div#messagecenter-submissions div.actions .general-button {
+    color:  #616161;
+}
+div#messagecenter-submissions div.actions .mature-button {
+    color:  #697CC1;
+}
+div#messagecenter-submissions div.actions .adult-button {
+    color:  #971C1C;
+}
+div#messagecenter-submissions div.actions .open-button {
+    font-weight:    bold;
+}
