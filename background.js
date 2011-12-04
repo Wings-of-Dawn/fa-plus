@@ -59,6 +59,11 @@ function openSubmission(submission)
     });
 }
 
+function scrollToSubmission(tabId)
+{
+    chrome.tabs.executeScript(tabId, {file: "center_submission.js"});
+}
+
 chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
     switch (request.type)
     {
@@ -107,9 +112,17 @@ chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
     if (change.status !== "complete")
         return;
 
-    // If we've just opened a new tab for a submission, display the "cancel opening tabs" icon
-    if ((openTabs.indexOf(tabId) >= 0) && (submissionsToOpen.length > 0))
-        showPageAction(tabId, ICON.ICON_CANCEL);
+    // If we've just opened a new tab for a submission, do some stuff:
+    if (openTabs.indexOf(tabId) >= 0)
+    {
+        // Show the "stop opening tabs" action icon, if applicable
+        if (submissionsToOpen.length > 0)
+            showPageAction(tabId, ICON.ICON_CANCEL);
+
+        // If requested, center the submission in the page
+        if (getOptionValue(OPTIONS.AUTO_CENTER))
+            scrollToSubmission(tabId);
+    }
 });
 
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {

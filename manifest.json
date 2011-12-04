@@ -17,7 +17,11 @@
         }
     ],
     "options_page": "options_page.html",
-    "permissions": ["tabs"],
+    "permissions":
+    [
+        "tabs",
+        "http://www.furaffinity.net/*"
+    ],
     "content_security_policy": "script-src 'self'"
 }
 
