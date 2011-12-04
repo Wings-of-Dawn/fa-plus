@@ -65,7 +65,7 @@ function saveOptions()
 
     // Update status to let user know options were saved.
     var status = document.getElementById("status");
-    status.innerHTML = "<p>Options saved.</p>";
+    status.innerHTML = "Options saved.";
     setTimeout(function() {
             status.innerHTML = "";
     }, 2000);

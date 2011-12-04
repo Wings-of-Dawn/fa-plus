@@ -10,6 +10,11 @@ var OPTIONS = {
         type:           OPTION_TYPE.INTEGER,
         defaultValue:   5
     },
+    AUTO_CENTER: {
+        key:            "auto-center",
+        type:           OPTION_TYPE.BOOLEAN,
+        defaultValue:   true
+    },
     AUTO_REMOVE: {
         key:            "auto-remove",
         type:           OPTION_TYPE.BOOLEAN,
@@ -20,6 +25,7 @@ var OPTIONS = {
 // For convenient enumeration:
 var ALL_OPTIONS = [
     OPTIONS.TAB_COUNT,
+    OPTIONS.AUTO_CENTER,
     OPTIONS.AUTO_REMOVE
 ];
 
