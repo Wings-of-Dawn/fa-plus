@@ -21,6 +21,11 @@ var ACTION_BUTTONS = [
         classes:    "button open-button",
         text:       "Open Checked",
         handler:    "openSelectedSubmissions"
+    },
+    {
+        classes:    "button open-button",
+        text:       "Open All",
+        handler:    "openAllSubmissions"
     }
 ];
 
@@ -133,6 +138,15 @@ function openSelectedSubmissions()
     chrome.extension.sendRequest({
         type:           "openSubmissions",
         submissions:    findSelectedSubmissions()
+    });
+}
+
+function openAllSubmissions()
+{
+    // Send all submissions to the extension to be opened
+    chrome.extension.sendRequest({
+        type:           "openSubmissions",
+        submissions:    findAllSubmissions()
     });
 }
 
