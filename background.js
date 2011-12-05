@@ -26,9 +26,8 @@ function restoreDefaultActions()
     showPageAction(submissionsTab, ICON.ICON_NORMAL);
 
     // Remove the "cancel" icon from all open tabs
-    openTabs.forEach(function (tabId) {
-        // I'm not sure why, but this call needs to be wrapped in an anonymous function; probably hidden arguments confused by additional parameters passed by forEach()
-        chrome.pageAction.hide(tabId);
+    openTabs.forEach(function (tabData) {
+        chrome.pageAction.hide(tabData.id);
     });
 }
 
@@ -55,8 +54,18 @@ function openSubmission(submission)
     },
     function (newTab) {
         // Add the tab's id to the list of tabs that are loading or open
-        openTabs.push(newTab.id);
+        openTabs.push({id: newTab.id, submissionURL: submission});
     });
+}
+
+function findOpenTab(tabId)
+{
+    var matches = openTabs.filter(function (tabData) {
+        return (tabData.id === tabId);
+    });
+    if (matches.length < 1)
+        return null;
+    return matches[0];
 }
 
 function scrollToSubmission(tabId)
@@ -112,8 +121,9 @@ chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
     if (change.status !== "complete")
         return;
 
-    // If we've just opened a new tab for a submission, do some stuff:
-    if (openTabs.indexOf(tabId) >= 0)
+    // Check if the tab one of the tabs we opened, and that it's displaying the page we displayed
+    var openTabData = findOpenTab(tabId);
+    if (openTabData && (openTabData.submissionURL.indexOf(tab.url) >= 0))
     {
         // Show the "stop opening tabs" action icon, if applicable
         if (submissionsToOpen.length > 0)
@@ -127,10 +137,11 @@ chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
 
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
     // Check if the closed tab is one of the submission pages we've opened
-    if (openTabs.indexOf(tabId) > -1)
+    var tab = findOpenTab(tabId);
+    if (tab)
     {
         // Remove that tab from the list of open tabs
-        openTabs.splice(openTabs.indexOf(tabId), 1);
+        openTabs.splice(openTabs.indexOf(tab), 1);
 
         // If the window is closing, there's nothing more for us to do
         if (removeInfo.isWindowClosing)
