@@ -29,21 +29,25 @@ var ACTIONS_BUTTONS = [
 
 var INPUT_ELEMENT_TYPE_TAG = "input";
 
-//  Create a div containing the buttons we want to add
-var selectionButtons = document.createElement("div");
-selectionButtons.setAttribute("class", ACTIONS_DIV_CLASS);
+//  Create divs containing the buttons we want to add
+var selectionButtonsTop = document.createElement("div");
+selectionButtonsTop.setAttribute("class", ACTIONS_DIV_CLASS);
+var selectionButtonsBottom = document.createElement("div");
+selectionButtonsBottom.setAttribute("class", ACTIONS_DIV_CLASS);
 ACTIONS_BUTTONS.forEach(function (buttonData) {
-    makeButton(buttonData, selectionButtons);
+    makeButton(buttonData, selectionButtonsTop);
+    makeButton(buttonData, selectionButtonsBottom);
 });
 
-// Find the first "actions" div in the messages-list form
+// Find the "actions" divs in the messages-list form
 var MESSAGES_FORM_ID = "messages-form";
 var messageForm = document.getElementById(MESSAGES_FORM_ID);
 var ACTIONS_DIV_CLASS = "actions";
-var actionsDiv = messageForm.getElementsByClassName(ACTIONS_DIV_CLASS)[0];
+var actionsDivs = messageForm.getElementsByClassName(ACTIONS_DIV_CLASS);
 
-// Add the buttons before it
-messageForm.insertBefore(selectionButtons, actionsDiv);
+// Add our row of buttons before each of the existing rows
+messageForm.insertBefore(selectionButtonsBottom, actionsDivs[1].nextSibling); // Ordering is important! Collection will be mutated
+messageForm.insertBefore(selectionButtonsTop, actionsDivs[0]);
 
 // Tell the extension to show the page action icon
 chrome.extension.sendRequest({type: "showPageAction"});
