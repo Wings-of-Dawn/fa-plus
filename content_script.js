@@ -1,5 +1,10 @@
 var ACTIONS_DIV_CLASS = "actions";
-var SELECTION_BUTTONS = [
+var ACTIONS_BUTTONS = [
+    {
+        classes:    "button open-button open-all-button",
+        text:       "Open All",
+        handler:    "openAllSubmissions"
+    },
     {
         classes:    "button general-button",
         text:       "Check General",
@@ -14,33 +19,21 @@ var SELECTION_BUTTONS = [
         classes:    "button adult-button",
         text:       "Check Adult",
         handler:    "selectAdultSubmissions"
-    }
-];
-var ACTION_BUTTONS = [
-    {
-        classes:    "button open-button",
-        text:       "Open Checked",
-        handler:    "openSelectedSubmissions"
     },
     {
-        classes:    "button open-button",
-        text:       "Open All",
-        handler:    "openAllSubmissions"
+        classes:    "button open-button open-checked-button",
+        text:       "Open Checked",
+        handler:    "openSelectedSubmissions"
     }
 ];
 
 var INPUT_ELEMENT_TYPE_TAG = "input";
 
-//  Create divs containing the buttons we want to add
+//  Create a div containing the buttons we want to add
 var selectionButtons = document.createElement("div");
 selectionButtons.setAttribute("class", ACTIONS_DIV_CLASS);
-SELECTION_BUTTONS.forEach(function (buttonData) {
+ACTIONS_BUTTONS.forEach(function (buttonData) {
     makeButton(buttonData, selectionButtons);
-});
-var actionButtons = document.createElement("div");
-actionButtons.setAttribute("class", ACTIONS_DIV_CLASS);
-ACTION_BUTTONS.forEach(function (buttonData) {
-    makeButton(buttonData, actionButtons);
 });
 
 // Find the first "actions" div in the messages-list form
@@ -49,9 +42,8 @@ var messageForm = document.getElementById(MESSAGES_FORM_ID);
 var ACTIONS_DIV_CLASS = "actions";
 var actionsDiv = messageForm.getElementsByClassName(ACTIONS_DIV_CLASS)[0];
 
-// Add the selection buttons before it, and the action buttons after it
+// Add the buttons before it
 messageForm.insertBefore(selectionButtons, actionsDiv);
-messageForm.insertBefore(actionButtons, actionsDiv.nextSibling);
 
 // Tell the extension to show the page action icon
 chrome.extension.sendRequest({type: "showPageAction"});
