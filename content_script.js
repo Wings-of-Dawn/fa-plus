@@ -1,5 +1,5 @@
-var ACTIONS_DIV_CLASS = "actions";
-var ACTIONS_BUTTONS = [
+var ADDED_ACTIONS_DIV_CLASS = "added-actions";
+var ADDED_ACTIONS_BUTTONS = [
     {
         classes:    "button open-button open-all-button",
         text:       "Open All",
@@ -31,10 +31,10 @@ var INPUT_ELEMENT_TYPE_TAG = "input";
 
 //  Create divs containing the buttons we want to add
 var selectionButtonsTop = document.createElement("div");
-selectionButtonsTop.setAttribute("class", ACTIONS_DIV_CLASS);
+selectionButtonsTop.setAttribute("class", ADDED_ACTIONS_DIV_CLASS);
 var selectionButtonsBottom = document.createElement("div");
-selectionButtonsBottom.setAttribute("class", ACTIONS_DIV_CLASS);
-ACTIONS_BUTTONS.forEach(function (buttonData) {
+selectionButtonsBottom.setAttribute("class", ADDED_ACTIONS_DIV_CLASS);
+ADDED_ACTIONS_BUTTONS.forEach(function (buttonData) {
     makeButton(buttonData, selectionButtonsTop);
     makeButton(buttonData, selectionButtonsBottom);
 });
@@ -42,11 +42,11 @@ ACTIONS_BUTTONS.forEach(function (buttonData) {
 // Find the "actions" divs in the messages-list form
 var MESSAGES_FORM_ID = "messages-form";
 var messageForm = document.getElementById(MESSAGES_FORM_ID);
-var ACTIONS_DIV_CLASS = "actions";
-var actionsDivs = messageForm.getElementsByClassName(ACTIONS_DIV_CLASS);
+var EXISTING_ACTIONS_DIV_CLASS = "actions";
+var actionsDivs = messageForm.getElementsByClassName(EXISTING_ACTIONS_DIV_CLASS);
 
 // Add our row of buttons before each of the existing rows
-messageForm.insertBefore(selectionButtonsBottom, actionsDivs[1].nextSibling); // Ordering is important! Collection will be mutated
+messageForm.insertBefore(selectionButtonsBottom, actionsDivs[1].nextSibling); // Ordering is important! Collection will be mutated, so if we add the buttons to the top first, the bottom buttons will appear in the wrong place
 messageForm.insertBefore(selectionButtonsTop, actionsDivs[0]);
 
 // Tell the extension to show the page action icon

@@ -1,20 +1,24 @@
-div#messagecenter-submissions div.actions .general-button {
+div#messagecenter-submissions div.added-actions {
+
+}
+
+div#messagecenter-submissions div.added-actions .general-button {
     color:  #616161;
 }
-div#messagecenter-submissions div.actions .mature-button {
+div#messagecenter-submissions div.added-actions .mature-button {
     color:  #697CC1;
 }
-div#messagecenter-submissions div.actions .adult-button {
+div#messagecenter-submissions div.added-actions .adult-button {
     color:  #971C1C;
 }
-div#messagecenter-submissions div.actions .open-button {
+div#messagecenter-submissions div.added-actions .open-button {
     font-weight:        bold;
     background-color:   #88BE88;
 }
-div#messagecenter-submissions div.actions .open-all-button {
+div#messagecenter-submissions div.added-actions .open-all-button {
     float:  left;
 }
-div#messagecenter-submissions div.actions .open-checked-button {
+div#messagecenter-submissions div.added-actions .open-checked-button {
     float:  right;
 }
 
