@@ -1,5 +1,9 @@
 div#messagecenter-submissions div.added-actions {
-
+    margin:     7px auto 7px auto;
+    width:      700px;
+    text-align: center;
+    overflow:   hidden;
+    clear:      both;
 }
 
 div#messagecenter-submissions div.added-actions .general-button {
