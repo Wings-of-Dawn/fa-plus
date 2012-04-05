@@ -1,4 +1,5 @@
 DONE - Update CSS to fix layout of added action-buttons at top and bottom of submissions page
-Update JS to make 'check *', 'open checked', and 'open all' buttons work again
+DONE - Update JS to make 'check *', 'open checked', and 'open all' buttons work again
+Investigate behavior of 'open all' button (only opening checked submissions?)
 Verify that image-centering content script still works
 DONE - Change 'cancel' icon to use an admonishment rather than a cross

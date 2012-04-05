@@ -1,29 +1,42 @@
-var ADDED_ACTIONS_DIV_CLASS = "added-actions";
+var SUBMISSION_RATING_CLASSES = {
+    GENERAL:    "r-general",
+    MATURE:     "r-mature",
+    ADULT:      "r-adult"
+};
+var ALL_SUBMISSION_RATING_CLASSES = [
+    SUBMISSION_RATING_CLASSES.GENERAL,
+    SUBMISSION_RATING_CLASSES.MATURE,
+    SUBMISSION_RATING_CLASSES.ADULT
+];
+
+var CHECKED_CONTAINER_CLASS = "checked";
+
+var ADDED_ACTIONS_DIV_CLASSES = "added-actions";
 var ADDED_ACTIONS_BUTTONS = [
     {
         classes:    "button open-button open-all-button",
         text:       "Open All",
-        handler:    "openAllSubmissions"
+        handler:    function () {openAllSubmissions();}
     },
     {
         classes:    "button general-button",
-        text:       "Check General",
-        handler:    "selectGeneralSubmissions"
+        text:       "Check/Uncheck General",
+        handler:    function () {selectSubmissionsOfType(SUBMISSION_RATING_CLASSES.GENERAL);}
     },
     {
         classes:    "button mature-button",
-        text:       "Check Mature",
-        handler:    "selectMatureSubmissions"
+        text:       "Check/Uncheck Mature",
+        handler:    function () {selectSubmissionsOfType(SUBMISSION_RATING_CLASSES.MATURE);}
     },
     {
         classes:    "button adult-button",
-        text:       "Check Adult",
-        handler:    "selectAdultSubmissions"
+        text:       "Check/Uncheck Adult",
+        handler:    function () {selectSubmissionsOfType(SUBMISSION_RATING_CLASSES.ADULT);}
     },
     {
         classes:    "button open-button open-checked-button",
         text:       "Open Checked",
-        handler:    "openSelectedSubmissions"
+        handler:    function () {openSelectedSubmissions();}
     }
 ];
 
@@ -31,12 +44,12 @@ var INPUT_ELEMENT_TYPE_TAG = "input";
 
 //  Create divs containing the buttons we want to add
 var selectionButtonsTop = document.createElement("div");
-selectionButtonsTop.setAttribute("class", ADDED_ACTIONS_DIV_CLASS);
+selectionButtonsTop.setAttribute("class", ADDED_ACTIONS_DIV_CLASSES);
 var selectionButtonsBottom = document.createElement("div");
-selectionButtonsBottom.setAttribute("class", ADDED_ACTIONS_DIV_CLASS);
+selectionButtonsBottom.setAttribute("class", ADDED_ACTIONS_DIV_CLASSES);
 ADDED_ACTIONS_BUTTONS.forEach(function (buttonData) {
-    makeButton(buttonData, selectionButtonsTop);
-    makeButton(buttonData, selectionButtonsBottom);
+    selectionButtonsTop.appendChild(makeButton(buttonData));
+    selectionButtonsBottom.appendChild(makeButton(buttonData));
 });
 
 // Find the "actions" divs in the messages-list form
@@ -67,7 +80,7 @@ chrome.extension.onRequest.addListener(function (request, sender, sendResponse) 
     }
 });
 
-function makeButton(buttonData, container) {
+function makeButton(buttonData) {
     // Create a button element
     var button = document.createElement("input");
     button.setAttribute("class", buttonData.classes);
@@ -75,61 +88,22 @@ function makeButton(buttonData, container) {
     button.setAttribute("value", buttonData.text);
 
     // Add a click handler
-    button.addEventListener("click", window[buttonData.handler], false);
+    button.addEventListener("click", buttonData.handler, false);
 
-    // Add the button to the new div
-    container.appendChild(button);
+    return button;
 }
 
-function selectGeneralSubmissions()
-{
-    var GENERAL_THUMB_CLASS_NAME = "general";
-    selectSubmissionsOfType(GENERAL_THUMB_CLASS_NAME);
-}
-
-function selectMatureSubmissions()
-{
-    var MATURE_THUMB_CLASS_NAME = "mature";
-    selectSubmissionsOfType(MATURE_THUMB_CLASS_NAME);
-}
-
-function selectAdultSubmissions()
-{
-    var ADULT_THUMB_CLASS_NAME = "adult";
-    selectSubmissionsOfType(ADULT_THUMB_CLASS_NAME);
-}
-
-function selectSubmissionsOfType(type)
-{
+function selectSubmissionsOfType(type) {
     // Find containers for elements of the specified type
-    var containers = findContainersForSubmissionType(type);
+    var containers = findContainersForSubmissionsOfType(type);
 
-    // Find and check the checkbox in each container
-    containers.forEach(function (containerElement) {
-        // Find input elements of the correct type in the container
-        var inputElements = containerElement.getElementsByTagName(INPUT_ELEMENT_TYPE_TAG);
-        var checkboxes = [];
-        for (var i = 0; i < inputElements.length; i++)
-        {
-            var inputElement = inputElements[i];
-            if (isCheckbox(inputElement))
-                checkboxes.push(inputElement);
-        }
-
-        // Check that at least one such element exists
-        if (checkboxes.length !== 1)
-            console.warn("unexpected number of checkbox elements in container: " + checkboxes.length + " (expected 1)");
-
-        // Check the checkbox (or checkboxes, if we found more than one)
-        checkboxes.forEach(function (checkbox) {
-            if (!checkbox.checked)
-                checkbox.click();
-        });
+    // "Select" the submission in the container by adding a "checked" class
+    containers.forEach(function (container) {
+        container.classList.toggle(CHECKED_CONTAINER_CLASS);
     });
 }
 
-function openSelectedSubmissions()
-{
+function openSelectedSubmissions() {
     // Send the list of selected submissions to the extension to be opened
     chrome.extension.sendRequest({
         type:           "openSubmissions",
@@ -137,8 +111,7 @@ function openSelectedSubmissions()
     });
 }
 
-function openAllSubmissions()
-{
+function openAllSubmissions() {
     // Send all submissions to the extension to be opened
     chrome.extension.sendRequest({
         type:           "openSubmissions",
@@ -146,111 +119,43 @@ function openAllSubmissions()
     });
 }
 
-function findSubmissionThumbnails()
-{
-    var SUBMISSION_THUMB_CLASS_NAME = "thumb-overlay";
-    return document.getElementsByClassName(SUBMISSION_THUMB_CLASS_NAME);
+function findAllSubmissions() {
+    // Find all submission-container elements
+    var containers = [];
+    ALL_SUBMISSION_RATING_CLASSES.forEach(function (ratingClass) {
+        containers = containers.concat(findContainersForSubmissionsOfType(ratingClass));
+    });
+    return getSubmissionsFromContainers(containers);
 }
 
-function findAllSubmissions()
-{
-    // Find all submission thumbnails
-    var submissionThumbs = findSubmissionThumbnails();
+function findSelectedSubmissions() {
+    // Find all checked submission-container elements
+    var checkedContainers = findContainersForSubmissionsOfType(CHECKED_CONTAINER_CLASS);
+    return getSubmissionsFromContainers(checkedContainers);
+}
 
+function findContainersForSubmissionsOfType(type) {
+    return toArray(document.getElementsByClassName(type));
+}
+
+function toArray(nodelist) {
+    var result = [];
+    for (var i = 0; i < nodelist.length; i++)
+        result.push(nodelist[i]);
+    return result;
+}
+
+function getSubmissionsFromContainers(containers) {
     // Find the submission reference corresponding to each thumbnail
     var foundSubmissions = [];
-    for (var i = 0; i < submissionThumbs.length; i++)
-    {
-        var thumb = submissionThumbs[i];
-        var container = findSubmissionContainer(thumb);
-        if (!container)
-            continue;
-        var submission = getSubmissionFromContainer(container);
-        if (!submission)
-            continue;
-        foundSubmissions.push(submission);
-    }
+    containers.forEach(function (container) {
+        foundSubmissions.push(getSubmissionFromContainer(container));
+    });
+
     return foundSubmissions;
 }
 
-function findContainersForSubmissionType(type)
-{
-    var foundContainers = [];
-    var lowercaseType = type.toLowerCase();
-
-    // Find the thumbnails for all submissions on the page
-    var submissionThumbs = findSubmissionThumbnails();
-
-    // For each thumbnail, check if it is the correct type, and if so, get its list-item container element
-    for (var i = 0; i < submissionThumbs.length; i++)
-    {
-        // Check if the thumbnail's classes include one of the allowed submission types
-        var thumbnail = submissionThumbs[i];
-        if (thumbnail.className.toLowerCase().indexOf(lowercaseType) < 0)
-            continue;
-
-        // Find the submission's list-item
-        var container = findSubmissionContainer(thumbnail);
-        if (!container)
-            continue;
-
-        // Add the container to the list
-        foundContainers.push(container);
-    }
-    return foundContainers;
-}
-
-function findSelectedSubmissions()
-{
-    // Find all input elements on the page
-    var inputElements = document.getElementsByTagName(INPUT_ELEMENT_TYPE_TAG);
-
-    // Use this list to find submissions whose checkbox is checked
-    var foundSubmissions = [];
-    for (var i = 0; i < inputElements.length; i++)
-    {
-        var inputElement = inputElements[i];
-        if (!isCheckbox(inputElement) || !inputElement.checked)
-            continue;
-
-        // Find the checkbox's container
-        var container = findSubmissionContainer(inputElement);
-        if (!container)
-            continue;
-
-        // Find the anchor referring to the submission in the container
-        var submission = getSubmissionFromContainer(container);
-        if (!submission)
-            continue;
-
-        // Add the reference to the list
-        foundSubmissions.push(submission);
-    }
-    return foundSubmissions;
-}
-
-function isCheckbox(inputElement)
-{
-    var CHECKBOX_ELEMENT_TYPE = "checkbox";
-    return (inputElement.type.toLowerCase() == CHECKBOX_ELEMENT_TYPE);
-}
-
-function findSubmissionContainer(submissionElement)
-{
-    var SUBMISSION_CONTAINER_ELEMENT_TYPE_TAG = "li";
-    var currentElement = submissionElement;
-    while (currentElement = currentElement.parentNode)
-    {
-        if (currentElement.tagName.toLowerCase() == SUBMISSION_CONTAINER_ELEMENT_TYPE_TAG)
-            return currentElement;
-    }
-    console.warn("no submission-list container element found for element:");
-    console.warn(submissionElement);
-    return null;
-}
-
-function getSubmissionFromContainer(containerElement)
-{
+function getSubmissionFromContainer(containerElement) {
     var SUBMISSION_REFERENCE_ELEMENT_TYPE_TAG = "a";
     var foundReferences = containerElement.getElementsByTagName(SUBMISSION_REFERENCE_ELEMENT_TYPE_TAG);
     var count = foundReferences.length;
@@ -261,7 +166,7 @@ function getSubmissionFromContainer(containerElement)
             return null;
     }
 
-    // We expect the first anchor to refer to the submission, and the second to it's submitter
+    // We expect the first anchor to refer to the submission, and the second to its author
     return foundReferences[0].href;
 }
 
