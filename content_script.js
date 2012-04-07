@@ -16,7 +16,7 @@ var ADDED_ACTIONS_BUTTONS = [
     {
         classes:    "button open-button open-all-button",
         text:       "Open All",
-        handler:    function () {openAllSubmissions();}
+        handler:    function () {openSubmissions(findAllSubmissions());}
     },
     {
         classes:    "button general-button",
@@ -36,7 +36,7 @@ var ADDED_ACTIONS_BUTTONS = [
     {
         classes:    "button open-button open-checked-button",
         text:       "Open Checked",
-        handler:    function () {openSelectedSubmissions();}
+        handler:    function () {openSubmissions(findSelectedSubmissions());}
     }
 ];
 
@@ -103,29 +103,26 @@ function selectSubmissionsOfType(type) {
     });
 }
 
-function openSelectedSubmissions() {
-    // Send the list of selected submissions to the extension to be opened
+function openSubmissions(submissions) {
+    // Send submissions to the extension to be opened
     chrome.extension.sendRequest({
         type:           "openSubmissions",
-        submissions:    findSelectedSubmissions()
-    });
-}
-
-function openAllSubmissions() {
-    // Send all submissions to the extension to be opened
-    chrome.extension.sendRequest({
-        type:           "openSubmissions",
-        submissions:    findAllSubmissions()
+        submissions:    submissions
     });
 }
 
 function findAllSubmissions() {
-    // Find all submission-container elements
-    var containers = [];
-    ALL_SUBMISSION_RATING_CLASSES.forEach(function (ratingClass) {
-        containers = containers.concat(findContainersForSubmissionsOfType(ratingClass));
+    var ANCHOR_TAG = "a";
+    return toArray(
+        // Find all anchor elements
+        document.getElementsByTagName(ANCHOR_TAG)
+    ).filter(function (anchorElement) {
+        // Filter for those that refer to submission pages
+        return (anchorElement.pathname.search("^/view") === 0);
+    }).map(function (anchorElement) {
+        // Return the full paths of the submission pages
+        return anchorElement.href;
     });
-    return getSubmissionsFromContainers(containers);
 }
 
 function findSelectedSubmissions() {
