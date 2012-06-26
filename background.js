@@ -31,13 +31,13 @@ function restoreDefaultActions()
     });
 }
 
-function submissionsReceived(submissions)
+function submissionsReceived(newSubmissions)
 {
-    // Make this our new list of submissions to open
-    submissionsToOpen = submissions;
+    // Add the new submissions to the list of submissions to open
+    submissionsToOpen = submissionsToOpen.concat(newSubmissions);
 
-    // Start opening submissions in tabs
-    for (var i = 0; (i < getOptionValue(OPTIONS.TAB_COUNT)) && (submissionsToOpen.length > 0); i++)
+    // Start opening submissions in tabs, up to the maximum number of tabs to open
+    for (var i = openTabs.length; (i < getOptionValue(OPTIONS.TAB_COUNT)) && (submissionsToOpen.length > 0); i++)
         openSubmission(submissionsToOpen.shift());
 
     // If there are more submissions to be opened, give the user the option of stopping them from opening
