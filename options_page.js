@@ -45,23 +45,35 @@ function saveOption(option)
     setOptionValue(option, element[getOptionElementProperty(option)]);
 }
 
+function validTabCount(value)
+{
+    return (!isNaN(value) && (value >= 1) && (value <= 60));
+}
+
 function saveOptions()
 {
-    // Check that the tab-count field contains an integer between 1 and 60
-    var tabCountVal = parseInt(document.getElementById(OPTIONS.TAB_COUNT.key).value);
-    var errorElement = document.getElementById("tab-count-error");
-    if (isNaN(tabCountVal) || (tabCountVal < 1) || (tabCountVal > 60))
+    // Remove old error messages, if any
+    var loadCountError = document.getElementById("load-count-error");
+    var tabCountError = document.getElementById("tab-count-error");
+    loadCountError.innerHTML = "";
+    tabCountError.innerHTML = "";
+
+    // Check that the tab-count fields contain integers between 1 and 60
+    if (!validTabCount(document.getElementById(OPTIONS.LOAD_COUNT.key).value))
     {
         // Display an error message
-        errorElement.innerHTML = "Please enter a value in the range 1-60";
+        loadCountError.innerHTML = "Please enter a value in the range 1-60";
+        return;
+    }
+    if (!validTabCount(document.getElementById(OPTIONS.TAB_COUNT.key).value))
+    {
+        // Display an error message
+        tabCountError.innerHTML = "Please enter a value in the range 1-60";
         return;
     }
 
     // Enumerate options, saving each to local storage
     ALL_OPTIONS.forEach(saveOption);
-
-    // Remove error message, if any
-    errorElement.innerHTML = "";
 
     // Update status to let user know options were saved.
     var status = document.getElementById("status");

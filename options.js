@@ -8,7 +8,17 @@ var OPTIONS = {
     TAB_COUNT: {
         key:            "tab-count",
         type:           OPTION_TYPE.INTEGER,
-        defaultValue:   5
+        defaultValue:   10
+    },
+    AUTO_OPEN: {
+        key:            "auto-open",
+        type:           OPTION_TYPE.BOOLEAN,
+        defaultValue:   false
+    },
+    LOAD_COUNT: {
+        key:            "load-count",
+        type:           OPTION_TYPE.INTEGER,
+        defaultValue:   3
     },
     AUTO_CENTER: {
         key:            "auto-center",
@@ -20,6 +30,8 @@ var OPTIONS = {
 // For convenient enumeration:
 var ALL_OPTIONS = [
     OPTIONS.TAB_COUNT,
+    OPTIONS.AUTO_OPEN,
+    OPTIONS.LOAD_COUNT,
     OPTIONS.AUTO_CENTER,
 ];
 
