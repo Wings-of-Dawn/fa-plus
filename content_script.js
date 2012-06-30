@@ -1,15 +1,23 @@
-var SUBMISSION_RATING_CLASSES = {
-    GENERAL:    "r-general",
-    MATURE:     "r-mature",
-    ADULT:      "r-adult"
-};
-var ALL_SUBMISSION_RATING_CLASSES = [
-    SUBMISSION_RATING_CLASSES.GENERAL,
-    SUBMISSION_RATING_CLASSES.MATURE,
-    SUBMISSION_RATING_CLASSES.ADULT
-];
-
 var CHECKED_CONTAINER_CLASS = "checked";
+var CHECKBOX_STATE = {
+    CHECKED:    true,
+    UNCHECKED:  false
+};
+
+var SUBMISSION_RATINGS = {
+    GENERAL: {
+        className:  "r-general",
+        state:      CHECKBOX_STATE.UNCHECKED
+    },
+    MATURE: {
+        className:  "r-mature",
+        state:      CHECKBOX_STATE.UNCHECKED
+    },
+    ADULT: {
+        className:  "r-adult",
+        state:      CHECKBOX_STATE.UNCHECKED
+    }
+};
 
 var ADDED_ACTIONS_DIV_CLASSES = "added-actions";
 var ADDED_ACTIONS_BUTTONS = [
@@ -21,17 +29,17 @@ var ADDED_ACTIONS_BUTTONS = [
     {
         classes:    "button general-button",
         text:       "Check/Uncheck General",
-        handler:    function () {selectSubmissionsOfType(SUBMISSION_RATING_CLASSES.GENERAL);}
+        handler:    function () {toggleSelected(SUBMISSION_RATINGS.GENERAL);}
     },
     {
         classes:    "button mature-button",
         text:       "Check/Uncheck Mature",
-        handler:    function () {selectSubmissionsOfType(SUBMISSION_RATING_CLASSES.MATURE);}
+        handler:    function () {toggleSelected(SUBMISSION_RATINGS.MATURE);}
     },
     {
         classes:    "button adult-button",
         text:       "Check/Uncheck Adult",
-        handler:    function () {selectSubmissionsOfType(SUBMISSION_RATING_CLASSES.ADULT);}
+        handler:    function () {toggleSelected(SUBMISSION_RATINGS.ADULT);}
     },
     {
         classes:    "button open-button open-checked-button",
@@ -93,19 +101,19 @@ function makeButton(buttonData) {
     return button;
 }
 
-function selectSubmissionsOfType(type) {
+function toggleSelected(submissionRating) {
     // Find containers for elements of the specified type
-    var containers = findContainersForSubmissionsOfType(type);
+    var containers = findContainersWithClassName(submissionRating.className);
 
     // "Select" the submission in the container
     containers.forEach(function (container) {
         var checkbox = getSelectionCheckboxFromContainer(container);
-        if (!checkbox) {
-            console.warn("no checkbox found in container: ", container);
-            return;
+        if (checkbox && (checkbox.checked === submissionRating.state))
+        {
+            checkbox.click();
         }
-        checkbox.click();
     });
+    submissionRating.state = !submissionRating.state;
 }
 
 function openSubmissions(submissions) {
@@ -132,11 +140,11 @@ function findAllSubmissions() {
 
 function findSelectedSubmissions() {
     // Find all checked submission-container elements
-    var checkedContainers = findContainersForSubmissionsOfType(CHECKED_CONTAINER_CLASS);
+    var checkedContainers = findContainersWithClassName(CHECKED_CONTAINER_CLASS);
     return getSubmissionsFromContainers(checkedContainers);
 }
 
-function findContainersForSubmissionsOfType(type) {
+function findContainersWithClassName(type) {
     return toArray(document.getElementsByClassName(type));
 }
 
