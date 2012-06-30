@@ -8,7 +8,6 @@
         "128": "FAPlusIcon_128.png"
     },
     "background_page": "background.html",
-    "incognito": "split",
     "page_action":
     {
         "default_icon":     "FAIcon.png",
