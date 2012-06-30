@@ -1,7 +1,14 @@
 {
-    "name": "FA Spider",
-    "version": "0.1",
+    "name": "Fur Affinity Plus",
+    "version": "1.0.0",
+    "description": "Minor enhancements to improve the user experience of browsing furaffinity.net",
+    "icons":
+    {
+        "48": "FAPlusIcon_48.png",
+        "128": "FAPlusIcon.png"
+    },
     "background_page": "background.html",
+    "incognito": "split",
     "page_action":
     {
         "default_icon":     "FAIcon.png",
