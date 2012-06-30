@@ -97,9 +97,14 @@ function selectSubmissionsOfType(type) {
     // Find containers for elements of the specified type
     var containers = findContainersForSubmissionsOfType(type);
 
-    // "Select" the submission in the container by adding a "checked" class
+    // "Select" the submission in the container
     containers.forEach(function (container) {
-        container.classList.toggle(CHECKED_CONTAINER_CLASS);
+        var checkbox = getSelectionCheckboxFromContainer(container);
+        if (!checkbox) {
+            console.warn("no checkbox found in container: ", container);
+            return;
+        }
+        checkbox.click();
     });
 }
 
@@ -165,5 +170,26 @@ function getSubmissionFromContainer(containerElement) {
 
     // We expect the first anchor to refer to the submission, and the second to its author
     return foundReferences[0].href;
+}
+
+function getSelectionCheckboxFromContainer(containerElement) {
+    var SELECTION_CHECKBOX_ELEMENT_TAGNAME = "input";
+    var SELECTION_CHECKBOX_ELEMENT_TYPE = "checkbox";
+    var inputDescendants = containerElement.getElementsByTagName(SELECTION_CHECKBOX_ELEMENT_TAGNAME);
+    var checkboxInputs = [];
+    for (var i = 0; i < inputDescendants.length; i++)
+    {
+        var inputElement = inputDescendants[i];
+        if (inputElement.type.toLowerCase() === SELECTION_CHECKBOX_ELEMENT_TYPE)
+            checkboxInputs.push(inputElement);
+    }
+    var count = checkboxInputs.length;
+    if (count !== 1)
+    {
+        console.warn("unexpected number of checkbox elements in container: " + count + " (expected 1)");
+        if (count < 1)
+            return null;
+    }
+    return checkboxInputs[0];
 }
 
