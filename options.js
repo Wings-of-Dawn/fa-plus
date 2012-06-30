@@ -14,11 +14,6 @@ var OPTIONS = {
         key:            "auto-center",
         type:           OPTION_TYPE.BOOLEAN,
         defaultValue:   true
-    },
-    AUTO_REMOVE: {
-        key:            "auto-remove",
-        type:           OPTION_TYPE.BOOLEAN,
-        defaultValue:   false
     }
 };
 
@@ -26,7 +21,6 @@ var OPTIONS = {
 var ALL_OPTIONS = [
     OPTIONS.TAB_COUNT,
     OPTIONS.AUTO_CENTER,
-    OPTIONS.AUTO_REMOVE
 ];
 
 function getOptionValue(option)
