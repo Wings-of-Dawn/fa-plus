@@ -5,7 +5,7 @@
     "icons":
     {
         "48": "FAPlusIcon_48.png",
-        "128": "FAPlusIcon.png"
+        "128": "FAPlusIcon_128.png"
     },
     "background_page": "background.html",
     "incognito": "split",
