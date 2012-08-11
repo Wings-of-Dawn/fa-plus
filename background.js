@@ -154,26 +154,26 @@ chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
     if (change.status !== "complete")
         return;
 
-    // Check if the tab one of the tabs we opened
+    // Check if the tab is one of the tabs we opened
     var tabData = findTab(tabId, loadingTabs);
-    if (tabData)
-    {
-        // Transfer to the list of open tabs
-        removeTabData(tabData, loadingTabs);
-        openTabs.push(tabData);
+    if (!tabData)
+        return;
 
-        // Show the "stop opening tabs" action icon, if applicable
-        if (submissionsToOpen.length > 0)
-            showPageAction(tabId, ICON.ICON_CANCEL);
+    // Transfer to the list of open tabs
+    removeTabData(tabData, loadingTabs);
+    openTabs.push(tabData);
 
-        // If requested, center the submission in the page
-        if (getOptionValue(OPTIONS.AUTO_CENTER))
-            scrollToSubmission(tabId);
+    // Show the "stop opening tabs" action icon, if applicable
+    if (submissionsToOpen.length > 0)
+        showPageAction(tabId, ICON.ICON_CANCEL);
 
-        // If requested, open the next submission automatically
-        if (getOptionValue(OPTIONS.AUTO_OPEN))
-            openNextSubmission();
-    }
+    // If requested, center the submission in the page
+    if (getOptionValue(OPTIONS.AUTO_CENTER))
+        scrollToSubmission(tabId);
+
+    // If requested, open the next submission automatically
+    if (getOptionValue(OPTIONS.AUTO_OPEN))
+        openNextSubmission();
 });
 
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
