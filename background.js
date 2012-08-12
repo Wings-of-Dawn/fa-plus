@@ -1,5 +1,6 @@
 var submissionsToOpen = [];
 var submissionsTab = null;
+var submissionsWindowId = null;
 var loadingTabs = [];
 var openTabs = [];
 
@@ -78,6 +79,7 @@ function openSubmission(submission)
 {
     // Create a new tab to display the submission page
     var newTab = chrome.tabs.create({
+        windowId:   submissionsWindowId,
         url:        submission,
         selected:   false
     },
@@ -111,6 +113,7 @@ chrome.extension.onMessage.addListener(function (message, sender, sendResponse) 
     switch (message.type)
     {
         case "showPageAction":
+        {
             // Content script has found a tab with submissions; display the page action
             showPageAction(sender.tab.id, ICON.ICON_NORMAL);
 
@@ -118,14 +121,24 @@ chrome.extension.onMessage.addListener(function (message, sender, sendResponse) 
             submissionsTab = sender.tab;
 
             break;
+        }
         case "openSubmissions":
+        {
             // Request from content script to open a collection of submissions
+            // Note the window id in which to open the submissions
+            // FIXME: we should group tabs by window, rather than assuming all tabs open in the same window
+            submissionsWindowId = sender.tab.windowId;
+
+            // Open the submissions in tabs
             submissionsReceived(message.submissions);
             break;
+        }
         default:
+        {
             // Unknown
             console.warn("unknown message type received: " + message.type);
             break;
+        }
     }
 });
 
@@ -204,6 +217,7 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
     if (removeInfo.isWindowClosing)
     {
         submissionsToOpen = [];
+        submissionsWindowId = null;
         return;
     }
 
