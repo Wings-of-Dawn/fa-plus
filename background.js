@@ -106,8 +106,8 @@ function scrollToSubmission(tabId)
     chrome.tabs.executeScript(tabId, {file: "center_submission.js"});
 }
 
-chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
-    switch (request.type)
+chrome.extension.onMessage.addListener(function (message, sender, sendResponse) {
+    switch (message.type)
     {
         case "showPageAction":
             // Content script has found a tab with submissions; display the page action
@@ -119,11 +119,11 @@ chrome.extension.onRequest.addListener(function (request, sender, sendResponse) 
             break;
         case "openSubmissions":
             // Request from content script to open a collection of submissions
-            submissionsReceived(request.submissions);
+            submissionsReceived(message.submissions);
             break;
         default:
             // Unknown
-            console.warn("unknown request type received: " + request.type);
+            console.warn("unknown message type received: " + message.type);
             break;
     }
 });
@@ -132,8 +132,8 @@ chrome.pageAction.onClicked.addListener(function (tab) {
     // If there are no tabs to be opened, run the content script to find submissions to open
     if (submissionsToOpen.length === 0)
     {
-        // Send the request, including a callback
-        chrome.tabs.sendRequest(
+        // Send the message, including a callback
+        chrome.tabs.sendMessage(
             tab.id,
             {type: "getSubmissions"},
             submissionsReceived);

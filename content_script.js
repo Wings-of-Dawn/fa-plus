@@ -71,11 +71,11 @@ messageForm.insertBefore(selectionButtonsBottom, actionsDivs[1].nextSibling); //
 messageForm.insertBefore(selectionButtonsTop, actionsDivs[0]);
 
 // Tell the extension to show the page action icon
-chrome.extension.sendRequest({type: "showPageAction"});
+chrome.extension.sendMessage({type: "showPageAction"});
 
-// Listen for requests from the extension
-chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
-    switch (request.type)
+// Listen for messages from the extension
+chrome.extension.onMessage.addListener(function (message, sender, sendResponse) {
+    switch (message.type)
     {
         case "getSubmissions":
             // Page action clicked: find and open all submissions on the page
@@ -83,7 +83,7 @@ chrome.extension.onRequest.addListener(function (request, sender, sendResponse) 
             break;
         default:
             // Unknown
-            console.warn("unknown request type received: " + request.type);
+            console.warn("unknown message type received: " + message.type);
             break;
     }
 });
@@ -118,7 +118,7 @@ function toggleSelected(submissionRating) {
 
 function openSubmissions(submissions) {
     // Send submissions to the extension to be opened
-    chrome.extension.sendRequest({
+    chrome.extension.sendMessage({
         type:           "openSubmissions",
         submissions:    submissions
     });
