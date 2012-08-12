@@ -132,11 +132,11 @@ chrome.pageAction.onClicked.addListener(function (tab) {
     // If there are no tabs to be opened, run the content script to find submissions to open
     if (submissionsToOpen.length === 0)
     {
-            // Send the request, including a callback
-            chrome.tabs.sendRequest(
-                tab.id,
-                {type: "getSubmissions"},
-                submissionsReceived);
+        // Send the request, including a callback
+        chrome.tabs.sendRequest(
+            tab.id,
+            {type: "getSubmissions"},
+            submissionsReceived);
     }
     // If we are in the process of opening submissions, stop doing so
     else
