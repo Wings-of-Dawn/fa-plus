@@ -1,4 +1,5 @@
 {
+    "manifest_version": 2,
     "name": "Fur Affinity Plus",
     "version": "1.0.0",
     "description": "Minor enhancements to improve the user experience of browsing furaffinity.net",
@@ -7,7 +8,9 @@
         "48": "FAPlusIcon_48.png",
         "128": "FAPlusIcon_128.png"
     },
-    "background_page": "background.html",
+    "background": {
+        "scripts": ["options.js", "background.js"]
+    },
     "page_action":
     {
         "default_icon":     "FAIcon.png",
@@ -27,7 +30,6 @@
     [
         "tabs",
         "http://www.furaffinity.net/*"
-    ],
-    "content_security_policy": "script-src 'self'"
+    ]
 }
 
