@@ -181,37 +181,33 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
     // Check if this was the submissions tab
     if (tabId === submissionsTab.id)
     {
-        // Release our reference to the tab
+        // Destroy our reference to the tab
         submissionsTab = null;
         return;
     }
 
     // Check if the closed tab is one of the submission pages we've opened
-    var tabData = findTab(tabId, openTabs);
-    if (tabData)
+    var tabData = null;
+    if ((tabData = findTab(tabId, openTabs)))
     {
         // Remove the tab from the list of open tabs
         removeTabData(tabData, openTabs);
-
-        // If the window is still open, open the next submission from the queue
-        if (!removeInfo.isWindowClosing)
-            openNextSubmission();
-
-        return;
     }
-
     // Check if the closed tab was a tab that was still loading
-    tabData = findTab(tabId, loadingTabs);
-    if (tabData)
+    else if ((tabData = findTab(tabId, loadingTabs)))
     {
         // Remove the tab from the list of loading tabs
         removeTabData(tabData, loadingTabs);
+    }
 
-        // If the window is still open, open the next submission from the queue
-        if (!removeInfo.isWindowClosing)
-            openNextSubmission();
-
+    // If the window is closing, stop opening new tabs
+    if (removeInfo.isWindowClosing)
+    {
+        submissionsToOpen = [];
         return;
     }
+
+    // Otherwise, attempt to open the next tab
+    openNextSubmission();
 });
 
