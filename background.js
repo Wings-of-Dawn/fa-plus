@@ -1,5 +1,5 @@
 var submissionsToOpen = [];
-var submissionsTab = null;
+var submissionsTabId = null;
 var submissionsWindowId = null;
 var loadingTabs = [];
 var openTabs = [];
@@ -25,8 +25,8 @@ function showPageAction(tabId, icon)
 function restoreDefaultActions()
 {
     // Restore the original icon on the submissions tab
-    if (submissionsTab)
-        showPageAction(submissionsTab.id, ICON.ICON_NORMAL);
+    if (submissionsTabId)
+        showPageAction(submissionsTabId, ICON.ICON_NORMAL);
 
     // Remove the "cancel" icon from all open tabs
     openTabs.forEach(function (tabData) {
@@ -46,8 +46,8 @@ function submissionsReceived(newSubmissions)
         openSubmission(submissionsToOpen.shift());
 
     // If there are more submissions to be opened, give the user the option of stopping them from opening
-    if ((submissionsToOpen.length > 0) && submissionsTab)
-        showPageAction(submissionsTab.id, ICON.ICON_CANCEL);
+    if ((submissionsToOpen.length > 0) && submissionsTabId)
+        showPageAction(submissionsTabId, ICON.ICON_CANCEL);
 }
 
 function openNextSubmission()
@@ -118,7 +118,7 @@ chrome.extension.onMessage.addListener(function (message, sender, sendResponse) 
             showPageAction(sender.tab.id, ICON.ICON_NORMAL);
 
             // Note which tab is the submissions page
-            submissionsTab = sender.tab;
+            submissionsTabId = sender.tab.id;
 
             break;
         }
@@ -192,10 +192,10 @@ chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
 
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
     // Check if this was the submissions tab
-    if (tabId === submissionsTab.id)
+    if (tabId === submissionsTabId)
     {
         // Destroy our reference to the tab
-        submissionsTab = null;
+        submissionsTabId = null;
         return;
     }
 
