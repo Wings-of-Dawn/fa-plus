@@ -139,7 +139,7 @@ function findAllSubmissions() {
 function findSelectedSubmissions() {
     // Find all checked submission-container elements
     var checkedContainers = findContainersWithClassName(CHECKED_CONTAINER_CLASS);
-    return getSubmissionsFromContainers(checkedContainers);
+    return checkedContainers.map(getSubmissionFromContainer);
 }
 
 function findContainersWithClassName(type) {
@@ -152,16 +152,6 @@ function toArray(nodelist) {
         result.push(nodelist[i]);
     }
     return result;
-}
-
-function getSubmissionsFromContainers(containers) {
-    // Find the submission reference corresponding to each thumbnail
-    var foundSubmissions = [];
-    containers.forEach(function (container) {
-        foundSubmissions.push(getSubmissionFromContainer(container));
-    });
-
-    return foundSubmissions;
 }
 
 function getSubmissionFromContainer(containerElement) {
