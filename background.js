@@ -23,8 +23,9 @@ function showPageAction(tabId, icon) {
 
 function restoreDefaultActions() {
     // Restore the original icon on the submissions tab
-    if (submissionsTabId)
+    if (submissionsTabId) {
         showPageAction(submissionsTabId, ICON.ICON_NORMAL);
+    }
 
     // Remove the "cancel" icon from all open tabs
     openTabs.forEach(function (tabData) {
@@ -39,33 +40,39 @@ function submissionsReceived(newSubmissions) {
     // Start opening submissions in tabs, up to the maximum number of tabs to open
     var currentTabCount = (loadingTabs.length + openTabs.length);
     var maxLoadingCount = getOptionValue(OPTIONS.LOAD_COUNT);
-    for (var i = currentTabCount; (i < maxLoadingCount) && (submissionsToOpen.length > 0); i++)
+    for (var i = currentTabCount; (i < maxLoadingCount) && (submissionsToOpen.length > 0); i++) {
         openSubmission(submissionsToOpen.shift());
+    }
 
     // If there are more submissions to be opened, give the user the option of stopping them from opening
-    if ((submissionsToOpen.length > 0) && submissionsTabId)
+    if ((submissionsToOpen.length > 0) && submissionsTabId) {
         showPageAction(submissionsTabId, ICON.ICON_CANCEL);
+    }
 }
 
 function openNextSubmission() {
     // Check if the submissions queue is empty, and if not, load the next one
-    if ((submissionsToOpen.length > 0) && canOpenTab())
+    if ((submissionsToOpen.length > 0) && canOpenTab()) {
         openSubmission(submissionsToOpen.shift());
+    }
 
     // If this was the last submission in the queue, remove the page action icons
-    if (submissionsToOpen.length === 0)
+    if (submissionsToOpen.length === 0) {
         restoreDefaultActions();
+    }
 }
 
 function canOpenTab() {
     // Check the number of tabs currently loading
-    if (loadingTabs.length >= getOptionValue(OPTIONS.LOAD_COUNT))
+    if (loadingTabs.length >= getOptionValue(OPTIONS.LOAD_COUNT)) {
         return false;
+    }
 
     // Check the total number of tabs we have open, if applicable
     var totalTabs = (loadingTabs.length + openTabs.length);
-    if (getOptionValue(OPTIONS.AUTO_OPEN) && (totalTabs >= getOptionValue(OPTIONS.TAB_COUNT)))
+    if (getOptionValue(OPTIONS.AUTO_OPEN) && (totalTabs >= getOptionValue(OPTIONS.TAB_COUNT))) {
         return false;
+    }
 
     return true;
 }
@@ -87,8 +94,9 @@ function findTab(tabId, tabSet) {
     var matches = tabSet.filter(function (tabData) {
         return (tabData.id === tabId);
     });
-    if (matches.length < 1)
+    if (matches.length < 1) {
         return null;
+    }
     return matches[0];
 }
 
@@ -149,29 +157,34 @@ chrome.pageAction.onClicked.addListener(function (tab) {
 
 chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
     // We're only interested in pages that have completely loaded
-    if (change.status !== "complete")
+    if (change.status !== "complete") {
         return;
+    }
 
     // Check if the tab is one of the tabs we opened
     var tabData = findTab(tabId, loadingTabs);
-    if (!tabData)
+    if (!tabData) {
         return;
+    }
 
     // Transfer to the list of open tabs
     removeTabData(tabData, loadingTabs);
     openTabs.push(tabData);
 
     // Show the "stop opening tabs" action icon, if applicable
-    if (submissionsToOpen.length > 0)
+    if (submissionsToOpen.length > 0) {
         showPageAction(tabId, ICON.ICON_CANCEL);
+    }
 
     // If requested, center the submission in the page
-    if (getOptionValue(OPTIONS.AUTO_CENTER))
+    if (getOptionValue(OPTIONS.AUTO_CENTER)) {
         scrollToSubmission(tabId);
+    }
 
     // If requested, open the next submission automatically
-    if (getOptionValue(OPTIONS.AUTO_OPEN))
+    if (getOptionValue(OPTIONS.AUTO_OPEN)) {
         openNextSubmission();
+    }
 });
 
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {

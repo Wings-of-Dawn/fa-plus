@@ -148,8 +148,9 @@ function findContainersWithClassName(type) {
 
 function toArray(nodelist) {
     var result = [];
-    for (var i = 0; i < nodelist.length; i++)
+    for (var i = 0; i < nodelist.length; i++) {
         result.push(nodelist[i]);
+    }
     return result;
 }
 
