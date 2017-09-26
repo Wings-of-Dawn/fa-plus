@@ -29,7 +29,8 @@
     "permissions":
     [
         "tabs",
-        "http://www.furaffinity.net/*"
+        "http://www.furaffinity.net/*",
+        "https://www.furaffinity.net/*"
     ]
 }
 
