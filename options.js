@@ -35,23 +35,19 @@ var ALL_OPTIONS = [
     OPTIONS.AUTO_CENTER,
 ];
 
-function getOptionValue(option)
-{
+function getOptionValue(option) {
     // Load the option value from localStorage
     var value = localStorage[option.key];
 
     // If the value doesn't exist, set to default
-    if (!value)
-    {
+    if (!value) {
         value = option.defaultValue;
         localStorage[option.key] = option.defaultValue;
     }
 
     // Convert to the appropriate type, if necessary
-    switch (option.type)
-    {
-        case OPTION_TYPE.BOOLEAN:
-        {
+    switch (option.type) {
+        case OPTION_TYPE.BOOLEAN: {
             // Check if the value is boolean "false", or a string representation thereof
             if (!value || (value === "false"))
                 value = false;
@@ -59,13 +55,11 @@ function getOptionValue(option)
                 value = true;
             break;
         }
-        case OPTION_TYPE.INTEGER:
-        {
+        case OPTION_TYPE.INTEGER: {
             value = parseInt(value);
             break;
         }
-        case OPTION_TYPE.FLOAT:
-        {
+        case OPTION_TYPE.FLOAT: {
             value = parseFloat(value);
             break;
         }
@@ -77,15 +71,12 @@ function getOptionValue(option)
     return value;
 }
 
-function setOptionValue(option, value)
-{
+function setOptionValue(option, value) {
     localStorage[option.key] = value;
 }
 
-function getOptionElementProperty(option)
-{
-    switch (option.type)
-    {
+function getOptionElementProperty(option) {
+    switch (option.type) {
         case OPTION_TYPE.BOOLEAN:
             return "checked";
     }

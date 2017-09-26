@@ -1,7 +1,6 @@
 window.addEventListener("load", init, false);
 
-function init()
-{
+function init() {
     // Restore settings values from localStorage
     restoreOptions();
 
@@ -10,12 +9,10 @@ function init()
 }
 
 // Populates options page with values loaded from localStorage
-function restoreOption(option)
-{
+function restoreOption(option) {
     // Find the corresponding element
     var element = document.getElementById(option.key);
-    if (!element)
-    {
+    if (!element) {
         console.warn("no corresponding element for option with key \"" + option.key + "\"");
         return;
     }
@@ -24,19 +21,16 @@ function restoreOption(option)
     element[getOptionElementProperty(option)] = getOptionValue(option);
 }
 
-function restoreOptions()
-{
+function restoreOptions() {
     // Enumerate options, populating the form
     ALL_OPTIONS.forEach(restoreOption);
 }
 
 // Saves options to localStorage
-function saveOption(option)
-{
+function saveOption(option) {
     // Find the corresponding element
     var element = document.getElementById(option.key);
-    if (!element)
-    {
+    if (!element) {
         console.warn("no corresponding element for option with key \"" + option.key + "\"");
         return;
     }
@@ -45,13 +39,11 @@ function saveOption(option)
     setOptionValue(option, element[getOptionElementProperty(option)]);
 }
 
-function validTabCount(value)
-{
+function validTabCount(value) {
     return (!isNaN(value) && (value >= 1) && (value <= 60));
 }
 
-function saveOptions()
-{
+function saveOptions() {
     // Remove old error messages, if any
     var loadCountError = document.getElementById("load-count-error");
     var tabCountError = document.getElementById("tab-count-error");
@@ -59,14 +51,12 @@ function saveOptions()
     tabCountError.innerHTML = "";
 
     // Check that the tab-count fields contain integers between 1 and 60
-    if (!validTabCount(document.getElementById(OPTIONS.LOAD_COUNT.key).value))
-    {
+    if (!validTabCount(document.getElementById(OPTIONS.LOAD_COUNT.key).value)) {
         // Display an error message
         loadCountError.innerHTML = "Please enter a value in the range 1-60";
         return;
     }
-    if (!validTabCount(document.getElementById(OPTIONS.TAB_COUNT.key).value))
-    {
+    if (!validTabCount(document.getElementById(OPTIONS.TAB_COUNT.key).value)) {
         // Display an error message
         tabCountError.innerHTML = "Please enter a value in the range 1-60";
         return;
@@ -78,8 +68,6 @@ function saveOptions()
     // Update status to let user know options were saved.
     var status = document.getElementById("status");
     status.innerHTML = "Options saved.";
-    setTimeout(function() {
-            status.innerHTML = "";
-    }, 2000);
+    setTimeout(function() {status.innerHTML = "";}, 2000);
 }
 

@@ -75,8 +75,7 @@ chrome.extension.sendMessage({type: "showPageAction"});
 
 // Listen for messages from the extension
 chrome.extension.onMessage.addListener(function (message, sender, sendResponse) {
-    switch (message.type)
-    {
+    switch (message.type) {
         case "getSubmissions":
             // Page action clicked: find and open all submissions on the page
             sendResponse(findAllSubmissions());
@@ -108,8 +107,7 @@ function toggleSelected(submissionRating) {
     // "Select" the submission in the container
     containers.forEach(function (container) {
         var checkbox = getSelectionCheckboxFromContainer(container);
-        if (checkbox && (checkbox.checked === submissionRating.state))
-        {
+        if (checkbox && (checkbox.checked === submissionRating.state)) {
             checkbox.click();
         }
     });
@@ -169,8 +167,7 @@ function getSubmissionFromContainer(containerElement) {
     var SUBMISSION_REFERENCE_ELEMENT_TYPE_TAG = "a";
     var foundReferences = containerElement.getElementsByTagName(SUBMISSION_REFERENCE_ELEMENT_TYPE_TAG);
     var count = foundReferences.length;
-    if (count !== 2)
-    {
+    if (count !== 2) {
         console.warn("unexpected number of anchor tags in container: " + count + " (expected 2)");
         if (count < 1)
             return null;
@@ -185,15 +182,13 @@ function getSelectionCheckboxFromContainer(containerElement) {
     var SELECTION_CHECKBOX_ELEMENT_TYPE = "checkbox";
     var inputDescendants = containerElement.getElementsByTagName(SELECTION_CHECKBOX_ELEMENT_TAGNAME);
     var checkboxInputs = [];
-    for (var i = 0; i < inputDescendants.length; i++)
-    {
+    for (var i = 0; i < inputDescendants.length; i++) {
         var inputElement = inputDescendants[i];
         if (inputElement.type.toLowerCase() === SELECTION_CHECKBOX_ELEMENT_TYPE)
             checkboxInputs.push(inputElement);
     }
     var count = checkboxInputs.length;
-    if (count !== 1)
-    {
+    if (count !== 1) {
         console.warn("unexpected number of checkbox elements in container: " + count + " (expected 1)");
         if (count < 1)
             return null;
