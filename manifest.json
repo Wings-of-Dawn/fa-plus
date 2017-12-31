@@ -25,7 +25,10 @@
             "js":       ["content_script.js"]
         }
     ],
-    "options_page": "options_page.html",
+    "options_ui": {
+      "page": "options_page.html",
+      "chrome_style": true
+    },
     "permissions":
     [
         "tabs",
