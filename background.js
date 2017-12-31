@@ -216,4 +216,3 @@ chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
     // Otherwise, attempt to open the next tab
     openNextSubmission();
 });
-

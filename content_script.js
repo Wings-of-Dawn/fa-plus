@@ -186,4 +186,3 @@ function getSelectionCheckboxFromContainer(containerElement) {
     }
     return checkboxInputs[0];
 }
-

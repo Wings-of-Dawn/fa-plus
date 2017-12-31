@@ -70,4 +70,3 @@ function saveOptions() {
     status.innerHTML = "Options saved.";
     setTimeout(function() {status.innerHTML = "";}, 2000);
 }
-

@@ -18,4 +18,3 @@ function centerViewOnSubmission() {
 
 // Wait a short time to ensure everything is loaded before attempting to center the submission
 setTimeout(centerViewOnSubmission, 500);
-
