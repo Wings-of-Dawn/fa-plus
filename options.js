@@ -1,8 +1,8 @@
 var OPTION_TYPE = {
-  BOOLEAN:  0,
-  INTEGER:  1,
-  FLOAT:   2,
-  STRING:   3
+  BOOLEAN: 0,
+  INTEGER: 1,
+  FLOAT: 2,
+  STRING: 3
 };
 var OPTIONS = {
   TAB_COUNT: {
