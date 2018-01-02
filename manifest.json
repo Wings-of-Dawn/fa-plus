@@ -22,7 +22,7 @@
             "matches":  ["http://*.furaffinity.net/msg/submissions*",
                          "https://*.furaffinity.net/msg/submissions*"],
             "css":      ["content_script_styles.css"],
-            "js":       ["content_script.js"]
+            "js":       ["submissions_content_script.js"]
         }
     ],
     "options_ui": {
