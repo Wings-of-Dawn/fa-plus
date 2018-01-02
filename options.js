@@ -24,6 +24,11 @@ const OPTIONS = {
     key: "auto-center",
     type: OPTION_TYPE.BOOLEAN,
     defaultValue: true
+  },
+  KEYBOARD_SHORTCUTS: {
+    key: "shortcuts",
+    type: OPTION_TYPE.BOOLEAN,
+    defaultValue: false
   }
 };
 
@@ -33,6 +38,7 @@ const ALL_OPTIONS = [
   OPTIONS.AUTO_OPEN,
   OPTIONS.LOAD_COUNT,
   OPTIONS.AUTO_CENTER,
+  OPTIONS.KEYBOARD_SHORTCUTS,
 ];
 
 function getOptionValue(option, callback) {
