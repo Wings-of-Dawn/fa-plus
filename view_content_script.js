@@ -7,14 +7,18 @@ function centerViewOnSubmission() {
     return;
   }
 
-  // Determine which coordinates should be placed in the top-left of the window
+  // Determine which coordinates should be placed in the top-left of the window.
   const boundingRect = submissionElement.getBoundingClientRect();
   const targetX = boundingRect.x + ((boundingRect.width - document.documentElement.clientWidth) / 2);
   const targetY = boundingRect.y + ((boundingRect.height - document.documentElement.clientHeight) / 2);
 
-  // Scroll the window to the target point
+  // Scroll the window to the target point.
   window.scrollTo(targetX, targetY);
 }
 
-// Wait a short time to ensure everything is loaded before attempting to center the submission
-setTimeout(centerViewOnSubmission, 500);
+// If view-centering is requested, wait a short time to ensure everything is loaded.
+getOptionValue(OPTIONS.AUTO_CENTER, (enabled) => {
+  if (enabled) {
+    setTimeout(centerViewOnSubmission, 500);
+  }
+});
