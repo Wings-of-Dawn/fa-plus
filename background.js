@@ -104,10 +104,6 @@ function removeTabData(tabData, tabSet) {
   tabSet.splice(tabSet.indexOf(tabData), 1);
 }
 
-function scrollToSubmission(tabId) {
-  chrome.tabs.executeScript(tabId, {file: "center_submission.js"});
-}
-
 chrome.extension.onMessage.addListener(function (message, sender, sendResponse) {
   switch (message.type) {
     case "showPageAction": {
@@ -174,11 +170,6 @@ chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
   // Show the "stop opening tabs" action icon, if applicable
   if (submissionsToOpen.length > 0) {
     showPageAction(tabId, ICON.ICON_CANCEL);
-  }
-
-  // If requested, center the submission in the page
-  if (getOptionValue(OPTIONS.AUTO_CENTER)) {
-    scrollToSubmission(tabId);
   }
 
   // If requested, open the next submission automatically
