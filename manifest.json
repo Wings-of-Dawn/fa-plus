@@ -29,6 +29,7 @@
     "chrome_style": true
   },
   "permissions": [
+    "storage",
     "tabs",
     "http://*.furaffinity.net/*",
     "https://*.furaffinity.net/*"

@@ -11,8 +11,8 @@ function init() {
   document.getElementById("savebutton").addEventListener("click", saveOptions, false);
 }
 
-// Populates options page with values loaded from storage.
-function restoreOption(option) {
+// Populates an element on the options page with a value loaded from storage.
+function restoreOption(option, optionValue) {
   // Find the corresponding element.
   const element = document.getElementById(option.key);
   if (!element) {
@@ -21,25 +21,25 @@ function restoreOption(option) {
   }
 
   // Populate the element.
-  element[getOptionElementProperty(option)] = getOptionValue(option);
+  element[getOptionElementProperty(option)] = optionValue;
 }
 
 function restoreOptions() {
   // Enumerate options, populating the form.
-  ALL_OPTIONS.forEach(restoreOption);
+  getOptionValues(ALL_OPTIONS, (optionValues) => {
+    ALL_OPTIONS.forEach((option) => restoreOption(option, optionValues[option.key]));
+  });
 }
 
-// Saves options to localStorage
-function saveOption(option) {
+// Retrieves the current value of the specified option from the state of the page.
+function getUpdatedOptionValue(option) {
   // Find the corresponding element.
   const element = document.getElementById(option.key);
   if (!element) {
     console.warn("no corresponding element for option with key \"" + option.key + "\"");
     return;
   }
-
-  // Set the option to the value of the element's value
-  setOptionValue(option, element[getOptionElementProperty(option)]);
+  return element[getOptionElementProperty(option)];
 }
 
 function validTabCount(value) {
@@ -64,11 +64,13 @@ function saveOptions() {
     return;
   }
 
-  // Enumerate options, saving each to local storage
-  ALL_OPTIONS.forEach(saveOption);
-
-  // Update status to let user know options were saved.
-  var status = document.getElementById("status");
-  status.innerHTML = "Options saved.";
-  setTimeout(function() {status.innerHTML = "";}, 2000);
+  // Save all option values.
+  const optionValues = {};
+  ALL_OPTIONS.forEach((option) => optionValues[option.key] = getUpdatedOptionValue(option));
+  setOptionValues(optionValues, () => {
+    // Update status to let user know options were saved.
+    const statusElement = document.getElementById("status");
+    statusElement.innerHTML = "Options saved.";
+    setTimeout(() => {statusElement.innerHTML = "";}, 3000);
+  });
 }

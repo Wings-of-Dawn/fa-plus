@@ -1,10 +1,10 @@
-var OPTION_TYPE = {
+const OPTION_TYPE = {
   BOOLEAN: 0,
   INTEGER: 1,
   FLOAT: 2,
   STRING: 3
 };
-var OPTIONS = {
+const OPTIONS = {
   TAB_COUNT: {
     key: "tab-count",
     type: OPTION_TYPE.INTEGER,
@@ -28,51 +28,35 @@ var OPTIONS = {
 };
 
 // For convenient enumeration:
-var ALL_OPTIONS = [
+const ALL_OPTIONS = [
   OPTIONS.TAB_COUNT,
   OPTIONS.AUTO_OPEN,
   OPTIONS.LOAD_COUNT,
   OPTIONS.AUTO_CENTER,
 ];
 
-function getOptionValue(option) {
-  // Load the option value from localStorage
-  var value = localStorage[option.key];
-
-  // If the value doesn't exist, set to default
-  if (!value) {
-    value = option.defaultValue;
-    localStorage[option.key] = option.defaultValue;
-  }
-
-  // Convert to the appropriate type, if necessary
-  switch (option.type) {
-    case OPTION_TYPE.BOOLEAN: {
-      // Check if the value is boolean "false", or a string representation thereof
-      if (!value || (value === "false"))
-        value = false;
-      else
-        value = true;
-      break;
-    }
-    case OPTION_TYPE.INTEGER: {
-      value = parseInt(value);
-      break;
-    }
-    case OPTION_TYPE.FLOAT: {
-      value = parseFloat(value);
-      break;
-    }
-    default:
-      break;
-  }
-
-  // Return the value
-  return value;
+function getOptionValue(option, callback) {
+  getOptionValues([option], (optionValues) => callback(optionValues[option.key]));
 }
 
-function setOptionValue(option, value) {
-  localStorage[option.key] = value;
+function getOptionValues(options, callback) {
+  // Load the option values from Chrome storage, providing defaults if no value has been set.
+  const optionsAndDefaults = {};
+  options.forEach((option) => optionsAndDefaults[option.key] = option.defaultValue);
+  chrome.storage.local.get(
+      optionsAndDefaults,
+      (optionValues) => {
+        const convertedOptionValues = {};
+        options.forEach((option) => {
+          const convertedValue = castOptionValue(option, optionValues[option.key]);
+          convertedOptionValues[option.key] = convertedValue;
+        });
+        callback(convertedOptionValues);
+      });
+}
+
+function setOptionValues(optionData, callback) {
+  chrome.storage.local.set(optionData, callback);
 }
 
 function getOptionElementProperty(option) {
@@ -82,4 +66,18 @@ function getOptionElementProperty(option) {
     }
   }
   return "value";
+}
+
+function castOptionValue(option, optionValue) {
+  switch (option.type) {
+    case OPTION_TYPE.INTEGER: {
+      return parseInt(optionValue);
+    }
+    case OPTION_TYPE.FLOAT: {
+      return parseFloat(optionValue);
+    }
+    default: {
+      return optionValue;
+    }
+  }
 }

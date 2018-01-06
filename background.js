@@ -37,17 +37,15 @@ function submissionsReceived(newSubmissions) {
   // Add the new submissions to the list of submissions to open
   submissionsToOpen = submissionsToOpen.concat(newSubmissions);
 
-  // Start opening submissions in tabs, up to the maximum number of tabs to open
-  var currentTabCount = (loadingTabs.length + openTabs.length);
-  var maxLoadingCount = getOptionValue(OPTIONS.LOAD_COUNT);
-  for (var i = currentTabCount; (i < maxLoadingCount) && (submissionsToOpen.length > 0); i++) {
-    openSubmission(submissionsToOpen.shift());
-  }
-
-  // If there are more submissions to be opened, give the user the option of stopping them from opening
-  if ((submissionsToOpen.length > 0) && submissionsTabId) {
-    showPageAction(submissionsTabId, ICON.ICON_CANCEL);
-  }
+  // Start opening submissions in tabs, up to the maximum number of tabs to open.
+  getOptionValue(
+      OPTIONS.LOAD_COUNT,
+      (maxLoadingCount) => {
+        const currentCount = (loadingTabs.length + openTabs.length);
+        for (let i = currentCount; (i < maxLoadingCount) && (submissionsToOpen.length > 0); i++) {
+          openSubmission(submissionsToOpen.shift());
+        }
+      });
 }
 
 function openNextSubmission() {
@@ -152,18 +150,18 @@ chrome.pageAction.onClicked.addListener(function (tab) {
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
-  // We're only interested in pages that have completely loaded
+  // We're only interested in pages that have completely loaded.
   if (change.status !== "complete") {
     return;
   }
 
-  // Check if the tab is one of the tabs we opened
+  // Check if the tab is one of the tabs we opened.
   var tabData = findTab(tabId, loadingTabs);
   if (!tabData) {
     return;
   }
 
-  // Transfer to the list of open tabs
+  // Transfer to the list of open tabs.
   removeTabData(tabData, loadingTabs);
   openTabs.push(tabData);
 
@@ -172,10 +170,14 @@ chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
     showPageAction(tabId, ICON.ICON_CANCEL);
   }
 
-  // If requested, open the next submission automatically
-  if (getOptionValue(OPTIONS.AUTO_OPEN)) {
-    openNextSubmission();
-  }
+  // If requested, open the next submission automatically.
+  getOptionValue(
+      OPTIONS.AUTO_OPEN,
+      (enabled) => {
+        if (enabled) {
+          openNextSubmission();
+        }
+      });
 });
 
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
