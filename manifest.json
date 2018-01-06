@@ -1,39 +1,37 @@
 {
-    "manifest_version": 2,
-    "name": "Fur Affinity Plus",
-    "version": "1.0.0",
-    "description": "Minor enhancements to improve the user experience of browsing furaffinity.net",
-    "icons":
+  "manifest_version": 2,
+  "name": "Fur Affinity Plus",
+  "version": "1.0.0",
+  "description": "Minor enhancements to improve the user experience of browsing furaffinity.net",
+  "icons": {
+    "48": "FAPlusIcon_48.png",
+    "128": "FAPlusIcon_128.png"
+  },
+  "background": {
+    "scripts": ["options.js", "background.js"]
+  },
+  "page_action": {
+    "default_icon": "FAIcon.png",
+    "default_title": "Click to open all submissions"
+  },
+  "content_scripts": [
     {
-        "48": "FAPlusIcon_48.png",
-        "128": "FAPlusIcon_128.png"
-    },
-    "background": {
-        "scripts": ["options.js", "background.js"]
-    },
-    "page_action":
-    {
-        "default_icon":     "FAIcon.png",
-        "default_title":    "Click to open all submissions"
-    },
-    "content_scripts":
-    [
-        {
-            "matches":  ["http://*.furaffinity.net/msg/submissions*",
-                         "https://*.furaffinity.net/msg/submissions*"],
-            "css":      ["content_script_styles.css"],
-            "js":       ["submissions_content_script.js"]
-        }
-    ],
-    "options_ui": {
-      "page": "options_page.html",
-      "chrome_style": true
-    },
-    "permissions":
-    [
-        "tabs",
-        "http://www.furaffinity.net/*",
-        "https://www.furaffinity.net/*"
-    ]
+      "matches":  [
+        "http://*.furaffinity.net/msg/submissions*",
+        "https://*.furaffinity.net/msg/submissions*"
+      ],
+      "css": ["content_script_styles.css"],
+      "js": ["submissions_content_script.js"]
+    }
+  ],
+  "options_ui": {
+    "page": "options_page.html",
+    "chrome_style": true
+  },
+  "permissions": [
+    "tabs",
+    "http://*.furaffinity.net/*",
+    "https://*.furaffinity.net/*"
+  ]
 }
 
