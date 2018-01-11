@@ -21,7 +21,7 @@
         "https://*.furaffinity.net/msg/submissions*"
       ],
       "css": ["content_script_styles.css"],
-      "js": ["submissions_content_script.js"]
+      "js": ["options.js", "submissions_content_script.js"]
     },
     {
       "matches": [

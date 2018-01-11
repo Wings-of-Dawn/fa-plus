@@ -88,12 +88,33 @@ chrome.extension.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
+// If enabled, install handlers for keyboard shortcuts.
+getOptionValue(OPTIONS.KEYBOARD_SHORTCUTS, (enabled) => {
+  if (enabled) {
+    document.addEventListener('keydown', handleKeyDown);
+  }
+});
+
 function openSubmissions(submissions) {
   // Send submissions to the extension to be opened
   chrome.extension.sendMessage({
     type: "openSubmissions",
     submissions: submissions.map((container) => getSubmissionFromContainer(container))
   });
+}
+
+function handleKeyDown(e) {
+  if (e.preventDefaulted) {
+    return;
+  }
+
+  switch (e.key) {
+    case "a": {
+      e.preventDefault();
+      openSubmissions(findAllSubmissions());
+      break;
+    }
+  }
 }
 
 function getSubmissionsByRating(ratingClassName) {
