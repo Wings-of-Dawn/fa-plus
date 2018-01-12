@@ -49,9 +49,9 @@ function handleKeyDown(e) {
 function getShortcutAction(eventKey) {
   switch (eventKey) {
     case "j":
-      // TODO: newer submission
+      return () => document.getElementsByClassName('next')[0].click();
     case "k":
-      // TODO: older submission
+      return () => document.getElementsByClassName('prev')[0].click();
     case "f":
       // TODO: toggle favorite
   }
