@@ -112,18 +112,23 @@ function handleKeyDown(e) {
     return;
   }
 
-  switch (e.key) {
+  const shortcutAction = getShortcutAction(e.key);
+  if (shortcutAction) {
+    e.preventDefault();
+    shortcutAction();
+  }
+}
+
+function getShortcutAction(eventKey) {
+  switch (eventKey) {
     case "a": {
-      e.preventDefault();
-      openSubmissions(findAllSubmissions());
-      break;
+      return () => openSubmissions(findAllSubmissions());
     }
     case "s": {
-      e.preventDefault();
-      openSubmissions(findSelectedSubmissions());
-      break;
+      return () => openSubmissions(findSelectedSubmissions());
     }
   }
+  return null;
 }
 
 function getSubmissionsByRating(ratingClassName) {
