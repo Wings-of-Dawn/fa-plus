@@ -127,6 +127,15 @@ function getShortcutAction(eventKey) {
     case "s": {
       return () => openSubmissions(findSelectedSubmissions());
     }
+    case "q": {
+      return () => toggleSelected(SUBMISSION_RATINGS.GENERAL);
+    }
+    case "w": {
+      return () => toggleSelected(SUBMISSION_RATINGS.MATURE);
+    }
+    case "e": {
+      return () => toggleSelected(SUBMISSION_RATINGS.ADULT);
+    }
   }
   return null;
 }
