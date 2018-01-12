@@ -1,5 +1,7 @@
 const SUBMISSION_ELEMENT_ID = "submissionImg";
 
+const FAVORITE_LINK_PATTERN = RegExp("/fav/");
+
 function centerViewOnSubmission() {
   const submissionElement = document.getElementById(SUBMISSION_ELEMENT_ID);
   if (!submissionElement) {
@@ -53,7 +55,14 @@ function getShortcutAction(eventKey) {
     case "k":
       return () => document.getElementsByClassName('prev')[0].click();
     case "f":
-      // TODO: toggle favorite
+      return () => getFavoriteLink().click();
   }
   return null;
+}
+
+function getFavoriteLink() {
+  const favLinks =
+      Array.from(document.getElementsByTagName("a"))
+          .filter((link) => FAVORITE_LINK_PATTERN.test(link.href));
+  return favLinks[0];
 }
