@@ -56,6 +56,8 @@ function getShortcutAction(eventKey) {
       return () => document.getElementsByClassName('prev')[0].click();
     case "f":
       return () => getFavoriteLink().click();
+    case "v":
+      return () => document.getElementById(SUBMISSION_ELEMENT_ID).click();
   }
   return null;
 }
