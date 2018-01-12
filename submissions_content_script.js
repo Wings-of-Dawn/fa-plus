@@ -118,6 +118,11 @@ function handleKeyDown(e) {
       openSubmissions(findAllSubmissions());
       break;
     }
+    case "s": {
+      e.preventDefault();
+      openSubmissions(findSelectedSubmissions());
+      break;
+    }
   }
 }
 
