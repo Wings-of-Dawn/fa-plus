@@ -121,21 +121,16 @@ function handleKeyDown(e) {
 
 function getShortcutAction(eventKey) {
   switch (eventKey) {
-    case "a": {
+    case "a":
       return () => openSubmissions(findAllSubmissions());
-    }
-    case "s": {
+    case "s":
       return () => openSubmissions(findSelectedSubmissions());
-    }
-    case "q": {
+    case "q":
       return () => toggleSelected(SUBMISSION_RATINGS.GENERAL);
-    }
-    case "w": {
+    case "w":
       return () => toggleSelected(SUBMISSION_RATINGS.MATURE);
-    }
-    case "e": {
+    case "e":
       return () => toggleSelected(SUBMISSION_RATINGS.ADULT);
-    }
   }
   return null;
 }
