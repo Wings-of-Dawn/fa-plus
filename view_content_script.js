@@ -22,3 +22,38 @@ getOptionValue(OPTIONS.AUTO_CENTER, (enabled) => {
     setTimeout(centerViewOnSubmission, 500);
   }
 });
+
+// If enabled, install handlers for keyboard shortcuts.
+getOptionValue(OPTIONS.KEYBOARD_SHORTCUTS, (enabled) => {
+  if (enabled) {
+    document.addEventListener('keydown', handleKeyDown);
+  }
+});
+
+function handleKeyDown(e) {
+  // Skip events already handled, events with a modifier key held, and events sent to inputs.
+  const activeElementType = document.activeElement.tagName;
+  if (e.preventDefaulted ||
+      e.altKey || e.ctrlKey || e.metaKey ||
+      activeElementType === "INPUT" || activeElementType === "TEXTAREA") {
+    return;
+  }
+
+  const shortcutAction = getShortcutAction(e.key);
+  if (shortcutAction) {
+    e.preventDefault();
+    shortcutAction();
+  }
+}
+
+function getShortcutAction(eventKey) {
+  switch (eventKey) {
+    case "j":
+      // TODO: newer submission
+    case "k":
+      // TODO: older submission
+    case "f":
+      // TODO: toggle favorite
+  }
+  return null;
+}
