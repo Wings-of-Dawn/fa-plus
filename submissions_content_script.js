@@ -123,7 +123,7 @@ function getShortcutAction(eventKey) {
   switch (eventKey) {
     case "a":
       return () => openSubmissions(findAllSubmissions());
-    case "s":
+    case "c":
       return () => openSubmissions(findSelectedSubmissions());
     case "q":
       return () => toggleSelected(SUBMISSION_RATINGS.GENERAL);
