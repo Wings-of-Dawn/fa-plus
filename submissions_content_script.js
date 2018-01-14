@@ -48,23 +48,29 @@ const ADDED_ACTIONS_BUTTONS = [
   }
 ];
 
-// Create divs containing the buttons we want to add
-const selectionButtonsTop = document.createElement("div");
-selectionButtonsTop.setAttribute("class", ADDED_ACTIONS_DIV_CLASSES);
-const selectionButtonsBottom = document.createElement("div");
-selectionButtonsBottom.setAttribute("class", ADDED_ACTIONS_DIV_CLASSES);
-ADDED_ACTIONS_BUTTONS.forEach((buttonData) => {
-  selectionButtonsTop.appendChild(makeButton(buttonData));
-  selectionButtonsBottom.appendChild(makeButton(buttonData));
-});
 
-// Find the "actions" divs in the messages-list form.
-const messageForm = document.getElementById("messages-form");
-const actionsDivs = messageForm.getElementsByClassName("actions");
+function addButtons() {
+  // Create divs containing the buttons we want to add
+  const selectionButtonsTop = document.createElement("div");
+  selectionButtonsTop.setAttribute("class", ADDED_ACTIONS_DIV_CLASSES);
+  const selectionButtonsBottom = document.createElement("div");
+  selectionButtonsBottom.setAttribute("class", ADDED_ACTIONS_DIV_CLASSES);
+  ADDED_ACTIONS_BUTTONS.forEach((buttonData) => {
+    selectionButtonsTop.appendChild(makeButton(buttonData));
+    selectionButtonsBottom.appendChild(makeButton(buttonData));
+  });
 
-// Add our row of buttons before each of the existing rows
-messageForm.insertBefore(selectionButtonsBottom, actionsDivs[1].nextSibling); // Ordering is important! Collection will be mutated, so if we add the buttons to the top first, the bottom buttons will appear in the wrong place
-messageForm.insertBefore(selectionButtonsTop, actionsDivs[0]);
+  // Find the "actions" divs in the messages-list form.
+  const messageForm = document.getElementById("messages-form");
+  const actionsDivs = messageForm.getElementsByClassName("actions");
+
+  // Add our row of buttons before each of the existing rows
+  messageForm.insertBefore(selectionButtonsBottom, actionsDivs[1].nextSibling); // Ordering is important! Collection will be mutated, so if we add the buttons to the top first, the bottom buttons will appear in the wrong place
+  messageForm.insertBefore(selectionButtonsTop, actionsDivs[0]);
+}
+
+// Add the buttons to the control areas.
+addButtons();
 
 // Tell the extension to show the page action icon
 chrome.extension.sendMessage({type: "showPageAction"});
