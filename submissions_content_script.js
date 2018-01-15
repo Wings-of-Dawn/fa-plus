@@ -160,6 +160,8 @@ function getShortcutAction(e) {
 
 function getSelectShortcutAction(eventKey) {
   switch (eventKey) {
+    case "e":
+      return null; // TODO: select all submissions
     case "g":
       return () => toggleSelected(SUBMISSION_RATINGS.GENERAL);
     case "m":
@@ -190,9 +192,21 @@ function getViewShortcutAction(eventKey) {
 
 function getRemoveShortcutAction(eventKey) {
   switch (eventKey) {
+    case "e": {
+      return () => {
+        // TODO: remove all
+        shortcutMode = SHORTCUT_MODE.DEFAULT;
+      };
+    }
     case "c": {
       return () => {
         document.getElementsByClassName("remove-checked")[0].click();
+        shortcutMode = SHORTCUT_MODE.DEFAULT;
+      };
+    }
+    case "n": {
+      return () => {
+        // TODO: nuke submissions
         shortcutMode = SHORTCUT_MODE.DEFAULT;
       };
     }
