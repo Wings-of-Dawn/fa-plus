@@ -35,6 +35,7 @@ const ADDED_ACTIONS_BUTTONS = [
 
 const SHORTCUT_MODE = {
   DEFAULT: "DEFAULT",
+  VIEW: "VIEW",
   REMOVE: "REMOVE"
 };
 let shortcutMode = SHORTCUT_MODE.DEFAULT;
@@ -126,6 +127,7 @@ function handleKeyDown(e) {
 }
 
 function getShortcutAction(e) {
+  // If the shift key and a "mode" shortcut are held, change shortcut mode.
   if (e.shiftKey) {
     switch (e.key) {
       case "R": {
@@ -134,33 +136,66 @@ function getShortcutAction(e) {
           setTimeout(() => shortcutMode = SHORTCUT_MODE.DEFAULT, 500);
         };
       }
-    }
-    return null;
-  }
-
-  if (shortcutMode === SHORTCUT_MODE.REMOVE) {
-    switch (e.key) {
-      case "c": {
+      case "V": {
         return () => {
-          document.getElementsByClassName("remove-checked")[0].click();
-          shortcutMode = SHORTCUT_MODE.DEFAULT;
-        };
+          shortcutMode = SHORTCUT_MODE.VIEW;
+          setTimeout(() => shortcutMode = SHORTCUT_MODE.DEFAULT, 500);
+        }
       }
     }
     return null;
   }
 
-  switch (e.key) {
-    case "a":
-      return () => openSubmissions(findAllSubmissions());
-    case "c":
-      return () => openSubmissions(findSelectedSubmissions());
+  // Determine a shortcut action (if any) based on the current mode.
+  switch (shortcutMode) {
+    case SHORTCUT_MODE.DEFAULT:
+      return getSelectShortcutAction(e.key);
+    case SHORTCUT_MODE.VIEW:
+      return getViewShortcutAction(e.key);
+    case SHORTCUT_MODE.REMOVE:
+      return getRemoveShortcutAction(e.key);
+  }
+  return null;
+}
+
+function getSelectShortcutAction(eventKey) {
+  switch (eventKey) {
     case "q":
       return () => toggleSelected(SUBMISSION_RATINGS.GENERAL);
     case "w":
       return () => toggleSelected(SUBMISSION_RATINGS.MATURE);
     case "e":
       return () => toggleSelected(SUBMISSION_RATINGS.ADULT);
+  }
+  return null;
+}
+
+function getViewShortcutAction(eventKey) {
+  switch (eventKey) {
+    case "a": {
+      return () => {
+        openSubmissions(findAllSubmissions());
+        shortcutMode = SHORTCUT_MODE.DEFAULT;
+      };
+    }
+    case "c": {
+      return () => {
+        openSubmissions(findSelectedSubmissions());
+        shortcutMode = SHORTCUT_MODE.DEFAULT;
+      };
+    }
+  }
+  return null;
+}
+
+function getRemoveShortcutAction(eventKey) {
+  switch (eventKey) {
+    case "c": {
+      return () => {
+        document.getElementsByClassName("remove-checked")[0].click();
+        shortcutMode = SHORTCUT_MODE.DEFAULT;
+      };
+    }
   }
   return null;
 }
