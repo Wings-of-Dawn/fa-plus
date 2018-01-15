@@ -33,6 +33,12 @@ const ADDED_ACTIONS_BUTTONS = [
   }
 ];
 
+const SHORTCUT_MODE = {
+  DEFAULT: "DEFAULT",
+  REMOVE: "REMOVE"
+};
+let shortcutMode = SHORTCUT_MODE.DEFAULT;
+
 function makeButton(buttonData) {
   // Create a button element.
   const button = document.createElement("input");
@@ -112,15 +118,39 @@ function handleKeyDown(e) {
     return;
   }
 
-  const shortcutAction = getShortcutAction(e.key);
+  const shortcutAction = getShortcutAction(e);
   if (shortcutAction) {
     e.preventDefault();
     shortcutAction();
   }
 }
 
-function getShortcutAction(eventKey) {
-  switch (eventKey) {
+function getShortcutAction(e) {
+  if (e.shiftKey) {
+    switch (e.key) {
+      case "R": {
+        return () => {
+          shortcutMode = SHORTCUT_MODE.REMOVE;
+          setTimeout(() => shortcutMode = SHORTCUT_MODE.DEFAULT, 500);
+        };
+      }
+    }
+    return null;
+  }
+
+  if (shortcutMode === SHORTCUT_MODE.REMOVE) {
+    switch (e.key) {
+      case "c": {
+        return () => {
+          document.getElementsByClassName("remove-checked")[0].click();
+          shortcutMode = SHORTCUT_MODE.DEFAULT;
+        };
+      }
+    }
+    return null;
+  }
+
+  switch (e.key) {
     case "a":
       return () => openSubmissions(findAllSubmissions());
     case "c":
