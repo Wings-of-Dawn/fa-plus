@@ -160,11 +160,11 @@ function getShortcutAction(e) {
 
 function getSelectShortcutAction(eventKey) {
   switch (eventKey) {
-    case "q":
+    case "g":
       return () => toggleSelected(SUBMISSION_RATINGS.GENERAL);
-    case "w":
+    case "m":
       return () => toggleSelected(SUBMISSION_RATINGS.MATURE);
-    case "e":
+    case "a":
       return () => toggleSelected(SUBMISSION_RATINGS.ADULT);
   }
   return null;
@@ -172,7 +172,7 @@ function getSelectShortcutAction(eventKey) {
 
 function getViewShortcutAction(eventKey) {
   switch (eventKey) {
-    case "a": {
+    case "e": {
       return () => {
         openSubmissions(findAllSubmissions());
         shortcutMode = SHORTCUT_MODE.DEFAULT;
