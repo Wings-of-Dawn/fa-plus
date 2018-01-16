@@ -162,6 +162,8 @@ function getSelectShortcutAction(eventKey) {
   switch (eventKey) {
     case "e":
       return null; // TODO: select all submissions
+    case "i":
+      return () => document.getElementsByClassName("invert-selection")[0].click();
     case "g":
       return () => toggleSelected(SUBMISSION_RATINGS.GENERAL);
     case "m":
