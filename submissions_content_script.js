@@ -165,6 +165,8 @@ function getSelectShortcutAction(eventKey) {
   switch (eventKey) {
     case "e":
       return () => toggleChecked(getAllSubmissions());
+    case "n":
+      return () => setChecked(getAllSubmissions(), false);
     case "i":
       return () => document.getElementsByClassName("invert-selection")[0].click();
     case "g":
