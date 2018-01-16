@@ -49,30 +49,25 @@ function submissionsReceived(newSubmissions) {
 }
 
 function openNextSubmission() {
-  // Check if the submissions queue is empty, and if not, load the next one
-  if ((submissionsToOpen.length > 0) && canOpenTab()) {
-    openSubmission(submissionsToOpen.shift());
-  }
-
-  // If this was the last submission in the queue, remove the page action icons
+  // If this was the last submission in the queue, stop loading and remove the page action icons.
   if (submissionsToOpen.length === 0) {
     restoreDefaultActions();
-  }
-}
-
-function canOpenTab() {
-  // Check the number of tabs currently loading
-  if (loadingTabs.length >= getOptionValue(OPTIONS.LOAD_COUNT)) {
-    return false;
+    return;
   }
 
-  // Check the total number of tabs we have open, if applicable
-  var totalTabs = (loadingTabs.length + openTabs.length);
-  if (getOptionValue(OPTIONS.AUTO_OPEN) && (totalTabs >= getOptionValue(OPTIONS.TAB_COUNT))) {
-    return false;
-  }
-
-  return true;
+  // If more submissions can be opened, begin loading them.
+  getOptionValues(
+      [OPTIONS.LOAD_COUNT, OPTIONS.TAB_COUNT],
+      (optionValues) => {
+        // Start loading another submission if:
+        // - the number of loading tabs is below the configured maximum, and
+        // - the total number of tabs (loading and loaded) is below the configured maximum.
+        const totalTabCount = loadingTabs.length + openTabs.length;
+        if ((loadingTabs.length < optionValues[OPTIONS.LOAD_COUNT.key]) &&
+            (totalTabCount < optionValues[OPTIONS.TAB_COUNT.key])) {
+          openSubmission(submissionsToOpen.shift());
+        }
+      });
 }
 
 function openSubmission(submission) {
