@@ -211,7 +211,9 @@ function getRemoveShortcutAction(eventKey) {
     }
     case "n": {
       return () => {
-        // TODO: nuke submissions
+        // Should open a confirmation dialog rather than acting immediately.
+        // (FA, if you change this behavior without warning, so help you...)
+        document.getElementsByClassName("remove-nuke")[0].click();
         shortcutMode = SHORTCUT_MODE.DEFAULT;
       };
     }
