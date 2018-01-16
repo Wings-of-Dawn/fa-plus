@@ -33,6 +33,18 @@ const ADDED_ACTIONS_BUTTONS = [
   }
 ];
 
+function makeButton(buttonData) {
+  // Create a button element.
+  const button = document.createElement("input");
+  button.setAttribute("class", buttonData.classes);
+  button.setAttribute("type", "button");
+  button.setAttribute("value", buttonData.text);
+
+  // Add a click handler.
+  button.addEventListener("click", buttonData.handler, false);
+
+  return button;
+}
 
 function addButtons() {
   // Create divs containing the buttons we want to add
@@ -49,18 +61,20 @@ function addButtons() {
   const messageForm = document.getElementById("messages-form");
   const actionsDivs = messageForm.getElementsByClassName("actions");
 
-  // Add our row of buttons before each of the existing rows
-  messageForm.insertBefore(selectionButtonsBottom, actionsDivs[1].nextSibling); // Ordering is important! Collection will be mutated, so if we add the buttons to the top first, the bottom buttons will appear in the wrong place
+  // Add our row of buttons before each of the existing rows.
+  // Ordering is important! Collection will be mutated, so if we add the buttons to the top first,
+  // the bottom buttons will appear in the wrong place.
+  messageForm.insertBefore(selectionButtonsBottom, actionsDivs[1].nextSibling);
   messageForm.insertBefore(selectionButtonsTop, actionsDivs[0]);
 }
 
 // Add the buttons to the control areas.
 addButtons();
 
-// Tell the extension to show the page action icon
+// Tell the extension to show the page action icon.
 chrome.extension.sendMessage({type: "showPageAction"});
 
-// Listen for messages from the extension
+// Listen for messages from the extension.
 chrome.extension.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.type) {
     case "getSubmissions":
@@ -73,19 +87,6 @@ chrome.extension.onMessage.addListener((message, sender, sendResponse) => {
       break;
   }
 });
-
-function makeButton(buttonData) {
-  // Create a button element.
-  const button = document.createElement("input");
-  button.setAttribute("class", buttonData.classes);
-  button.setAttribute("type", "button");
-  button.setAttribute("value", buttonData.text);
-
-  // Add a click handler.
-  button.addEventListener("click", buttonData.handler, false);
-
-  return button;
-}
 
 function getSubmissionsByRating(ratingClassName) {
   return Array.from(document.getElementsByClassName(ratingClassName));
