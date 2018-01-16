@@ -197,7 +197,9 @@ function getRemoveShortcutAction(eventKey) {
   switch (eventKey) {
     case "e": {
       return () => {
-        // TODO: remove all
+        // Check all submissions and click the remove button.
+        setChecked(getAllSubmissions(), true);
+        document.getElementsByClassName("remove-checked")[0].click();
         shortcutMode = SHORTCUT_MODE.DEFAULT;
       };
     }
@@ -234,8 +236,10 @@ function allChecked(submissions) {
 }
 
 function toggleChecked(submissions) {
-  const targetState = !allChecked(submissions);
+  setChecked(submissions, !allChecked(submissions));
+}
 
+function setChecked(submissions, targetState) {
   // Rather than setting the checkbox states directly, click the checkboxes that don't match the
   // desired state, to trigger JS handlers properly.
   submissions
