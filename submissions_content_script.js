@@ -112,6 +112,7 @@ function openSubmissions(submissions) {
 
 function handleKeyDown(e) {
   // Skip events already handled, events with a modifier key held, and events sent to inputs.
+  // TODO: allow events sent to non-text inputs (buttons, checkboxes)
   const activeElementType = document.activeElement.tagName;
   if (e.preventDefaulted ||
       e.altKey || e.ctrlKey || e.metaKey ||
