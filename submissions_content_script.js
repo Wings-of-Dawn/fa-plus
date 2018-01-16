@@ -171,6 +171,7 @@ function getSelectShortcutAction(eventKey) {
       return () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.MATURE));
     case "a":
       return () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.ADULT));
+    // TODO: next/previous page navigation (tricky due to FA's layout classes)
   }
   return null;
 }
