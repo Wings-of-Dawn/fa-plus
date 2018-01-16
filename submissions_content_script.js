@@ -1,22 +1,7 @@
-const CHECKED_CONTAINER_CLASS = "checked";
-const CHECKBOX_STATE = {
-  CHECKED: true,
-  UNCHECKED: false
-};
-
 const SUBMISSION_RATINGS = {
-  GENERAL: {
-    className: "r-general",
-    state: CHECKBOX_STATE.UNCHECKED
-  },
-  MATURE: {
-    className: "r-mature",
-    state: CHECKBOX_STATE.UNCHECKED
-  },
-  ADULT: {
-    className: "r-adult",
-    state: CHECKBOX_STATE.UNCHECKED
-  }
+  GENERAL: "r-general",
+  MATURE: "r-mature",
+  ADULT: "r-adult"
 };
 
 const ADDED_ACTIONS_DIV_CLASSES = "added-actions";
@@ -24,27 +9,27 @@ const ADDED_ACTIONS_BUTTONS = [
   {
     classes: "button open-button open-all-button",
     text: "Open All",
-    handler: () => openSubmissions(findAllSubmissions())
+    handler: () => openSubmissions(getAllSubmissions())
   },
   {
     classes: "button general-button",
     text: "Check/Uncheck General",
-    handler: () => toggleSelected(SUBMISSION_RATINGS.GENERAL)
+    handler: () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.GENERAL))
   },
   {
     classes: "button mature-button",
     text: "Check/Uncheck Mature",
-    handler: () => toggleSelected(SUBMISSION_RATINGS.MATURE)
+    handler: () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.MATURE))
   },
   {
     classes: "button adult-button",
     text: "Check/Uncheck Adult",
-    handler: () => toggleSelected(SUBMISSION_RATINGS.ADULT)
+    handler: () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.ADULT))
   },
   {
     classes: "button open-button open-checked-button",
     text: "Open Checked",
-    handler: () => openSubmissions(findSelectedSubmissions())
+    handler: () => openSubmissions(getCheckedSubmissions())
   }
 ];
 
@@ -80,7 +65,7 @@ chrome.extension.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.type) {
     case "getSubmissions":
       // Page action clicked: find and open all submissions on the page
-      sendResponse(findAllSubmissions());
+      sendResponse(getAllSubmissions().map((container) => getSubmissionFromContainer(container)));
       break;
     default:
       // Unknown
@@ -102,38 +87,39 @@ function makeButton(buttonData) {
   return button;
 }
 
-function toggleSelected(submissionRating) {
-  // Find containers for elements of the specified type.
-  const containers = Array.from(document.getElementsByClassName(submissionRating.className));
+function getSubmissionsByRating(ratingClassName) {
+  return Array.from(document.getElementsByClassName(ratingClassName));
+}
 
-  // "Select" (or deselect) the submission in the container.
-  containers
-      .map((container) => getSelectionCheckboxFromContainer(container))
-      .filter((checkbox) => checkbox && (checkbox.checked === submissionRating.state))
+function getAllSubmissions() {
+  return Array.from(document.getElementsByTagName("figure"));
+}
+
+function getCheckedSubmissions() {
+  return getAllSubmissions().filter((container) => getCheckboxFromContainer(container).checked);
+}
+
+function allChecked(submissions) {
+  return submissions.every((container) => getCheckboxFromContainer(container).checked);
+}
+
+function toggleChecked(submissions) {
+  const targetState = !allChecked(submissions);
+
+  // Rather than setting the checkbox states directly, click the checkboxes that don't match the
+  // desired state, to trigger JS handlers properly.
+  submissions
+      .map((container) => getCheckboxFromContainer(container))
+      .filter((checkbox) => checkbox.checked !== targetState)
       .forEach((checkbox) => checkbox.click());
-
-  // Keep track of the last known selection-state for these submissions.
-  submissionRating.state = !submissionRating.state;
 }
 
 function openSubmissions(submissions) {
   // Send submissions to the extension to be opened
   chrome.extension.sendMessage({
     type: "openSubmissions",
-    submissions: submissions
+    submissions: submissions.map((container) => getSubmissionFromContainer(container))
   });
-}
-
-function findAllSubmissions() {
-  return Array.from(document.getElementsByTagName("a"))
-      .filter((anchor) => anchor.pathname.search("^/view") === 0)
-      .map((anchor) => anchor.href);
-}
-
-function findSelectedSubmissions() {
-  // Find all checked submission-container elements
-  const checkedContainers = Array.from(document.getElementsByClassName(CHECKED_CONTAINER_CLASS));
-  return checkedContainers.map(getSubmissionFromContainer);
 }
 
 function getSubmissionFromContainer(containerElement) {
@@ -150,7 +136,7 @@ function getSubmissionFromContainer(containerElement) {
   return foundReferences[0].href;
 }
 
-function getSelectionCheckboxFromContainer(containerElement) {
+function getCheckboxFromContainer(containerElement) {
   const checkboxInputs =
       Array.from(containerElement.getElementsByTagName("input"))
           .filter((inputElement) => inputElement.type.toLowerCase() === "checkbox");
