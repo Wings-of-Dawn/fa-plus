@@ -1,10 +1,10 @@
-var submissionsToOpen = [];
-var submissionsTabId = null;
-var submissionsWindowId = null;
-var loadingTabs = [];
-var openTabs = [];
+let submissionsToOpen = [];
+let submissionsTabId = null;
+let submissionsWindowId = null;
+const loadingTabs = [];
+const openTabs = [];
 
-var ICON = {
+const ICON = {
   ICON_NORMAL:  {
     path: "FAIcon.png",
     title: "Click to open all submissions"
@@ -22,26 +22,24 @@ function showPageAction(tabId, icon) {
 }
 
 function restoreDefaultActions() {
-  // Restore the original icon on the submissions tab
+  // Restore the original icon on the submissions tab.
   if (submissionsTabId) {
     showPageAction(submissionsTabId, ICON.ICON_NORMAL);
   }
 
-  // Remove the "cancel" icon from all open tabs
-  openTabs.forEach(function (tabData) {
-    chrome.pageAction.hide(tabData.id);
-  });
+  // Remove the "cancel" icon from all open tabs.
+  openTabs.forEach((openTabData) => chrome.pageAction.hide(openTabData.id));
 }
 
 function submissionsReceived(newSubmissions) {
-  // Add the new submissions to the list of submissions to open
+  // Add the new submissions to the list of submissions to open.
   submissionsToOpen = submissionsToOpen.concat(newSubmissions);
 
   // Start opening submissions in tabs, up to the maximum number of tabs to open.
   getOptionValue(
       OPTIONS.LOAD_COUNT,
       (maxLoadingCount) => {
-        const currentCount = (loadingTabs.length + openTabs.length);
+        const currentCount = loadingTabs.length + openTabs.length;
         for (let i = currentCount; (i < maxLoadingCount) && (submissionsToOpen.length > 0); i++) {
           openSubmission(submissionsToOpen.shift());
         }
@@ -71,26 +69,18 @@ function openNextSubmission() {
 }
 
 function openSubmission(submission) {
-  // Create a new tab to display the submission page
-  var newTab = chrome.tabs.create({
+  // Create a new tab to display the submission page.
+  const tabInfo = {
     windowId: submissionsWindowId,
     url: submission,
     selected: false
-  },
-  function (newTab) {
-    // Add the tab's id to the list of loading tabs
-    loadingTabs.push({id: newTab.id, submissionURL: submission});
-  });
-}
-
-function findTab(tabId, tabSet) {
-  var matches = tabSet.filter(function (tabData) {
-    return (tabData.id === tabId);
-  });
-  if (matches.length < 1) {
-    return null;
-  }
-  return matches[0];
+  };
+  chrome.tabs.create(
+      tabInfo,
+      (newTab) => {
+        // Add the tab's info to the list of loading tabs.
+        loadingTabs.push({id: newTab.id, submissionURL: submission});
+      });
 }
 
 function removeTabData(tabData, tabSet) {
@@ -100,20 +90,20 @@ function removeTabData(tabData, tabSet) {
 chrome.extension.onMessage.addListener(function (message, sender, sendResponse) {
   switch (message.type) {
     case "showPageAction": {
-      // Content script has found a tab with submissions; display the page action
+      // Content script has found a tab with submissions; display the page action.
       showPageAction(sender.tab.id, ICON.ICON_NORMAL);
 
-      // Note which tab is the submissions page
+      // Note which tab is the submissions page.
       submissionsTabId = sender.tab.id;
       break;
     }
     case "openSubmissions": {
-      // Request from content script to open a collection of submissions
-      // Note the window id in which to open the submissions
+      // Request from content script to open a collection of submissions.
+      // Note the window id in which to open the submissions.
       // FIXME: we should group tabs by window, rather than assuming all tabs open in the same window
       submissionsWindowId = sender.tab.windowId;
 
-      // Open the submissions in tabs
+      // Open the submissions in tabs.
       submissionsReceived(message.submissions);
       break;
     }
@@ -126,17 +116,18 @@ chrome.extension.onMessage.addListener(function (message, sender, sendResponse) 
 });
 
 chrome.pageAction.onClicked.addListener(function (tab) {
-  // If there are no tabs to be opened, run the content script to find submissions to open
+  // If there are no tabs to be opened, run the content script to find submissions to open.
   if (submissionsToOpen.length === 0) {
     chrome.tabs.sendMessage(tab.id, {type: "getSubmissions"});
-  } else {
-    // If we are in the process of opening submissions, stop doing so
-    // Clear the list of submissions
-    submissionsToOpen = [];
-
-    // Reset page-action icons
-    restoreDefaultActions();
+    return;
   }
+
+  // If we are in the process of opening submissions, stop doing so.
+  // Clear the list of submissions.
+  submissionsToOpen = [];
+
+  // Reset page-action icons.
+  restoreDefaultActions();
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
@@ -146,7 +137,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
   }
 
   // Check if the tab is one of the tabs we opened.
-  var tabData = findTab(tabId, loadingTabs);
+  const tabData = loadingTabs.find((loadingTabData) => loadingTabData.id === tabId);
   if (!tabData) {
     return;
   }
@@ -155,7 +146,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
   removeTabData(tabData, loadingTabs);
   openTabs.push(tabData);
 
-  // Show the "stop opening tabs" action icon, if applicable
+  // Show the "stop opening tabs" action icon, if applicable.
   if (submissionsToOpen.length > 0) {
     showPageAction(tabId, ICON.ICON_CANCEL);
   }
@@ -171,31 +162,34 @@ chrome.tabs.onUpdated.addListener(function (tabId, change, tab) {
 });
 
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
-  // Check if this was the submissions tab
+  // Check if this was the submissions tab.
   if (tabId === submissionsTabId) {
-    // Destroy our reference to the tab
+    // Drop our reference to the tab.
     submissionsTabId = null;
     return;
   }
 
-  // Check if the closed tab is one of the submission pages we've opened
-  var tabData = null;
-  if ((tabData = findTab(tabId, openTabs))) {
-    // Remove the tab from the list of open tabs
+  // Check if the closed tab is one of the submission pages we've opened.
+  let tabData = openTabs.find((openTabData) => openTabData.id === tabId);
+  if (tabData) {
+    // Remove the tab from the list of open tabs.
     removeTabData(tabData, openTabs);
-  } else if ((tabData = findTab(tabId, loadingTabs))) {
-    // Check if the closed tab was a tab that was still loading
-    // Remove the tab from the list of loading tabs
+  }
+
+  // Check if the closed tab was a tab that was still loading.
+  tabData = loadingTabs.find((loadingTabData) => loadingTabData.id === tabId);
+  if (tabData) {
+    // Remove the tab from the list of loading tabs.
     removeTabData(tabData, loadingTabs);
   }
 
-  // If the window is closing, stop opening new tabs
+  // If the window is closing, stop opening new tabs.
   if (removeInfo.isWindowClosing) {
     submissionsToOpen = [];
     submissionsWindowId = null;
     return;
   }
 
-  // Otherwise, attempt to open the next tab
+  // Otherwise, attempt to open the next tab.
   openNextSubmission();
 });
