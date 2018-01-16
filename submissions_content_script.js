@@ -161,15 +161,15 @@ function getShortcutAction(e) {
 function getSelectShortcutAction(eventKey) {
   switch (eventKey) {
     case "e":
-      return null; // TODO: select all submissions
+      return () => toggleChecked(getAllSubmissions());
     case "i":
       return () => document.getElementsByClassName("invert-selection")[0].click();
     case "g":
-      return () => toggleSelected(SUBMISSION_RATINGS.GENERAL);
+      return () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.GENERAL));
     case "m":
-      return () => toggleSelected(SUBMISSION_RATINGS.MATURE);
+      return () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.MATURE));
     case "a":
-      return () => toggleSelected(SUBMISSION_RATINGS.ADULT);
+      return () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.ADULT));
   }
   return null;
 }
@@ -178,13 +178,13 @@ function getViewShortcutAction(eventKey) {
   switch (eventKey) {
     case "e": {
       return () => {
-        openSubmissions(findAllSubmissions());
+        openSubmissions(getAllSubmissions());
         shortcutMode = SHORTCUT_MODE.DEFAULT;
       };
     }
     case "c": {
       return () => {
-        openSubmissions(findSelectedSubmissions());
+        openSubmissions(getCheckedSubmissions());
         shortcutMode = SHORTCUT_MODE.DEFAULT;
       };
     }
