@@ -1,6 +1,7 @@
 const SUBMISSION_ELEMENT_ID = "submissionImg";
 
 const FAVORITE_LINK_PATTERN = RegExp("/fav/");
+const DOWNLOAD_LINK_TEXT = "Download";
 
 function centerViewOnSubmission() {
   const submissionElement = document.getElementById(SUBMISSION_ELEMENT_ID);
@@ -50,12 +51,14 @@ function handleKeyDown(e) {
 
 function getShortcutAction(eventKey) {
   switch (eventKey) {
+    case "d":
+      return () => getDownloadLink().click();
+    case "f":
+      return () => getFavoriteLink().click();
     case "j":
       return () => document.getElementsByClassName('next')[0].click();
     case "k":
       return () => document.getElementsByClassName('prev')[0].click();
-    case "f":
-      return () => getFavoriteLink().click();
     case "v":
       return () => document.getElementById(SUBMISSION_ELEMENT_ID).click();
   }
@@ -63,8 +66,15 @@ function getShortcutAction(eventKey) {
 }
 
 function getFavoriteLink() {
-  const favLinks =
-      Array.from(document.getElementsByTagName("a"))
-          .filter((link) => FAVORITE_LINK_PATTERN.test(link.href));
+  const favLinks = getAllLinks().filter((link) => FAVORITE_LINK_PATTERN.test(link.href));
   return favLinks[0];
+}
+
+function getDownloadLink() {
+  const dlLinks = getAllLinks().filter((link) => link.innerText === DOWNLOAD_LINK_TEXT);
+  return dlLinks[0];
+}
+
+function getAllLinks() {
+  return Array.from(document.getElementsByTagName("a"));
 }
