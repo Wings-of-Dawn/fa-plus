@@ -88,6 +88,14 @@ chrome.extension.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
+function openSubmissions(submissions) {
+  // Send submissions to the extension to be opened
+  chrome.extension.sendMessage({
+    type: "openSubmissions",
+    submissions: submissions.map((container) => getSubmissionFromContainer(container))
+  });
+}
+
 function getSubmissionsByRating(ratingClassName) {
   return Array.from(document.getElementsByClassName(ratingClassName));
 }
@@ -113,14 +121,6 @@ function toggleChecked(submissions) {
       .map((container) => getCheckboxFromContainer(container))
       .filter((checkbox) => checkbox.checked !== targetState)
       .forEach((checkbox) => checkbox.click());
-}
-
-function openSubmissions(submissions) {
-  // Send submissions to the extension to be opened
-  chrome.extension.sendMessage({
-    type: "openSubmissions",
-    submissions: submissions.map((container) => getSubmissionFromContainer(container))
-  });
 }
 
 function getSubmissionFromContainer(containerElement) {
