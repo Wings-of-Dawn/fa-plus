@@ -85,11 +85,10 @@ chrome.extension.sendMessage({type: "showPageAction"});
 chrome.extension.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.type) {
     case "getSubmissions":
-      // Page action clicked: find and open all submissions on the page
-      sendResponse(getAllSubmissions().map((container) => getSubmissionFromContainer(container)));
+      // Page action clicked: open all submissions on the page.
+      openSubmissions(getAllSubmissions());
       break;
     default:
-      // Unknown
       console.warn("unknown message type received: " + message.type);
       break;
   }

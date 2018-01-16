@@ -110,7 +110,6 @@ chrome.extension.onMessage.addListener(function (message, sender, sendResponse) 
 
       // Note which tab is the submissions page
       submissionsTabId = sender.tab.id;
-
       break;
     }
     case "openSubmissions": {
@@ -134,11 +133,7 @@ chrome.extension.onMessage.addListener(function (message, sender, sendResponse) 
 chrome.pageAction.onClicked.addListener(function (tab) {
   // If there are no tabs to be opened, run the content script to find submissions to open
   if (submissionsToOpen.length === 0) {
-    // Send the message, including a callback
-    chrome.tabs.sendMessage(
-      tab.id,
-      {type: "getSubmissions"},
-      submissionsReceived);
+    chrome.tabs.sendMessage(tab.id, {type: "getSubmissions"});
   } else {
     // If we are in the process of opening submissions, stop doing so
     // Clear the list of submissions
