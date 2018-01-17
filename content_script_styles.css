@@ -1,28 +1,36 @@
 div#messagecenter-submissions div.added-actions {
-    margin:     7px auto 7px auto;
-    width:      700px;
-    text-align: center;
-    overflow:   hidden;
-    clear:      both;
+  margin: 7px auto;
+  width: 700px;
+  text-align: center;
+  overflow: hidden;
+  clear: both;
+}
+
+div#messagecenter-submissions div.added-actions input[type="button"] {
+  cursor: pointer;
 }
 
 div#messagecenter-submissions div.added-actions .general-button {
-    color:  #616161;
-}
-div#messagecenter-submissions div.added-actions .mature-button {
-    color:  #697CC1;
-}
-div#messagecenter-submissions div.added-actions .adult-button {
-    color:  #971C1C;
-}
-div#messagecenter-submissions div.added-actions .open-button {
-    font-weight:        bold;
-    background-color:   #88BE88;
-}
-div#messagecenter-submissions div.added-actions .open-all-button {
-    float:  left;
-}
-div#messagecenter-submissions div.added-actions .open-checked-button {
-    float:  right;
+  color: #616161;
 }
 
+div#messagecenter-submissions div.added-actions .mature-button {
+  color: #697CC1;
+}
+
+div#messagecenter-submissions div.added-actions .adult-button {
+  color: #971C1C;
+}
+
+div#messagecenter-submissions div.added-actions .open-button {
+  font-weight: bold;
+  background-color: #88BE88;
+}
+
+div#messagecenter-submissions div.added-actions .open-all-button {
+  float: left;
+}
+
+div#messagecenter-submissions div.added-actions .open-checked-button {
+  float: right;
+}
