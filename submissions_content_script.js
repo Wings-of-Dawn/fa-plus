@@ -129,26 +129,25 @@ function handleKeyDown(e) {
 }
 
 function getShortcutAction(e) {
-  // If the shift key and a "mode" shortcut are held, change shortcut mode.
-  if (e.shiftKey) {
-    switch (e.key) {
-      case "R": {
-        return () => {
-          shortcutMode = SHORTCUT_MODE.REMOVE;
-          setTimeout(() => resetShortcutMode(), 500);
-        };
-      }
-      case "V": {
-        return () => {
-          shortcutMode = SHORTCUT_MODE.VIEW;
-          setTimeout(() => resetShortcutMode(), 500);
-        }
+  // If a "mode" key is pressed, return an action that changes the current mode.
+  switch (e.key) {
+    // Shift-R: remove submissions mode.
+    case "R": {
+      return () => {
+        shortcutMode = SHORTCUT_MODE.REMOVE;
+        setTimeout(() => resetShortcutMode(), 500);
+      };
+    }
+    // V: "view" (open) submissions mode.
+    case "v": {
+      return () => {
+        shortcutMode = SHORTCUT_MODE.VIEW;
+        setTimeout(() => resetShortcutMode(), 500);
       }
     }
-    return null;
   }
 
-  // Determine a shortcut action (if any) based on the current mode.
+  // Otherwise, determine a shortcut action (if any) based on the current mode.
   switch (shortcutMode) {
     case SHORTCUT_MODE.DEFAULT:
       return getSelectShortcutAction(e.key);
