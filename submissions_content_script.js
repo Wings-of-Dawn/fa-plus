@@ -135,13 +135,13 @@ function getShortcutAction(e) {
       case "R": {
         return () => {
           shortcutMode = SHORTCUT_MODE.REMOVE;
-          setTimeout(() => shortcutMode = SHORTCUT_MODE.DEFAULT, 500);
+          setTimeout(() => resetShortcutMode(), 500);
         };
       }
       case "V": {
         return () => {
           shortcutMode = SHORTCUT_MODE.VIEW;
-          setTimeout(() => shortcutMode = SHORTCUT_MODE.DEFAULT, 500);
+          setTimeout(() => resetShortcutMode(), 500);
         }
       }
     }
@@ -184,13 +184,13 @@ function getViewShortcutAction(eventKey) {
     case "e": {
       return () => {
         openSubmissions(getAllSubmissions());
-        shortcutMode = SHORTCUT_MODE.DEFAULT;
+        resetShortcutMode();
       };
     }
     case "c": {
       return () => {
         openSubmissions(getCheckedSubmissions());
-        shortcutMode = SHORTCUT_MODE.DEFAULT;
+        resetShortcutMode();
       };
     }
   }
@@ -204,13 +204,13 @@ function getRemoveShortcutAction(eventKey) {
         // Check all submissions and click the remove button.
         setChecked(getAllSubmissions(), true);
         document.getElementsByClassName("remove-checked")[0].click();
-        shortcutMode = SHORTCUT_MODE.DEFAULT;
+        resetShortcutMode();
       };
     }
     case "c": {
       return () => {
         document.getElementsByClassName("remove-checked")[0].click();
-        shortcutMode = SHORTCUT_MODE.DEFAULT;
+        resetShortcutMode();
       };
     }
     case "n": {
@@ -218,11 +218,15 @@ function getRemoveShortcutAction(eventKey) {
         // Should open a confirmation dialog rather than acting immediately.
         // (FA, if you change this behavior without warning, so help you...)
         document.getElementsByClassName("remove-nuke")[0].click();
-        shortcutMode = SHORTCUT_MODE.DEFAULT;
+        resetShortcutMode();
       };
     }
   }
   return null;
+}
+
+function resetShortcutMode() {
+  shortcutMode = SHORTCUT_MODE.DEFAULT;
 }
 
 function getSubmissionsByRating(ratingClassName) {
