@@ -160,66 +160,81 @@ function getShortcutAction(e) {
 }
 
 function getSelectShortcutAction(eventKey) {
+  // If the key corresponds to a standard grouping of submissions, toggle their check-state.
+  const submissionsGetter = submissionsSourceByKey(eventKey);
+  if (submissionsGetter) {
+    return () => toggleChecked(submissionsGetter());
+  }
+
+  // Check for keys corresponding to other actions.
   switch (eventKey) {
-    case "e":
-      return () => toggleChecked(getAllSubmissions());
     case "n":
       return () => setChecked(getAllSubmissions(), false);
     case "i":
       return () => document.getElementsByClassName("invert-selection")[0].click();
-    case "g":
-      return () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.GENERAL));
-    case "m":
-      return () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.MATURE));
-    case "a":
-      return () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.ADULT));
     // TODO: next/previous page navigation (tricky due to FA's layout classes)
   }
+
+  // Not a "select submissions" shortcut key.
   return null;
 }
 
 function getViewShortcutAction(eventKey) {
-  switch (eventKey) {
-    case "e": {
-      return () => {
-        openSubmissions(getAllSubmissions());
-        resetShortcutMode();
-      };
-    }
-    case "c": {
-      return () => {
-        openSubmissions(getCheckedSubmissions());
-        resetShortcutMode();
-      };
-    }
+  // If the key corresponds to a standard grouping of submissions, open them.
+  const submissionsGetter = submissionsSourceByKey(eventKey);
+  if (submissionsGetter) {
+    return () => {
+      openSubmissions(submissionsGetter());
+      resetShortcutMode();
+    };
   }
+
+  // Not a "view" shortcut key.
   return null;
 }
 
 function getRemoveShortcutAction(eventKey) {
+  // If the key corresponds to a standard grouping of submissions, check them (if not already
+  // checked) and click the "remove checked" button.
+  const submissionsGetter = submissionsSourceByKey(eventKey);
+  if (submissionsGetter) {
+    return () => {
+      // Uncheck all submissions first, to avoid removing any not specified by the shortcut.
+      setChecked(getAllSubmissions(), false);
+
+      // Check the specified submissions and click the remove button.
+      setChecked(submissionsGetter(), true);
+      document.getElementsByClassName("remove-checked")[0].click();
+      resetShortcutMode();
+    };
+  }
+
+  // If the key corresponds to the "nuke submissions" action, click the button.
+  if (eventKey === "n") {
+    return () => {
+      // Should open a confirmation dialog rather than acting immediately.
+      // (FA, if you change this behavior without warning, so help you...)
+      document.getElementsByClassName("remove-nuke")[0].click();
+      resetShortcutMode();
+    };
+  }
+
+  // Not a "remove submissions" shortcut key.
+  return null;
+}
+
+function submissionsSourceByKey(eventKey) {
   switch (eventKey) {
-    case "e": {
-      return () => {
-        // Check all submissions and click the remove button.
-        setChecked(getAllSubmissions(), true);
-        document.getElementsByClassName("remove-checked")[0].click();
-        resetShortcutMode();
-      };
-    }
-    case "c": {
-      return () => {
-        document.getElementsByClassName("remove-checked")[0].click();
-        resetShortcutMode();
-      };
-    }
-    case "n": {
-      return () => {
-        // Should open a confirmation dialog rather than acting immediately.
-        // (FA, if you change this behavior without warning, so help you...)
-        document.getElementsByClassName("remove-nuke")[0].click();
-        resetShortcutMode();
-      };
-    }
+    case "e":
+      return () => getAllSubmissions();
+    case "c":
+      return () => getCheckedSubmissions();
+    case "g":
+      return () => getSubmissionsByRating(SUBMISSION_RATINGS.GENERAL);
+    case "m":
+      return () => getSubmissionsByRating(SUBMISSION_RATINGS.MATURE);
+    case "a":
+      return () => getSubmissionsByRating(SUBMISSION_RATINGS.ADULT);
   }
   return null;
 }
