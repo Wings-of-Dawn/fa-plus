@@ -199,11 +199,14 @@ function getRemoveShortcutAction(eventKey) {
   const submissionsGetter = submissionsSourceByKey(eventKey);
   if (submissionsGetter) {
     return () => {
-      // Uncheck all submissions first, to avoid removing any not specified by the shortcut.
+      // Locate the specified set of submissions first.
+      submissions = submissionsGetter();
+
+      // Uncheck all submissions, to avoid removing any not specified by the shortcut.
       setChecked(getAllSubmissions(), false);
 
       // Check the specified submissions and click the remove button.
-      setChecked(submissionsGetter(), true);
+      setChecked(submissions, true);
       document.getElementsByClassName("remove-checked")[0].click();
       resetShortcutMode();
     };
