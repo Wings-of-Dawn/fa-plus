@@ -34,11 +34,21 @@ const ADDED_ACTIONS_BUTTONS = [
 ];
 
 const SHORTCUT_MODE = {
-  DEFAULT: "DEFAULT",
-  VIEW: "VIEW",
-  REMOVE: "REMOVE"
+  DEFAULT: {
+    labelText: "Select...",
+    labelClasses: ""
+  },
+  VIEW: {
+    labelText: "Open...",
+    labelClasses: "view-mode-label"
+  },
+  REMOVE: {
+    labelText: "Remove...",
+    labelClasses: "remove-mode-label"
+  }
 };
 let shortcutMode = SHORTCUT_MODE.DEFAULT;
+let shortcutModeLabel;
 
 // Add the buttons to the control areas.
 addButtons();
@@ -64,6 +74,9 @@ getOptionValue(OPTIONS.KEYBOARD_SHORTCUTS, (enabled) => {
   if (enabled) {
     document.addEventListener('keydown', handleKeyDown);
   }
+
+  // Create a floating element to show the current shortcut mode.
+  shortcutModeLabel = createAndAddModeLabel();
 });
 
 function addButtons() {
@@ -101,6 +114,14 @@ function makeButton(buttonData) {
   return button;
 }
 
+function createAndAddModeLabel() {
+  const label = document.createElement("div");
+  label.id = "shortcut-mode-label";
+  label.hidden = true;
+  document.body.appendChild(label);
+  return label;
+}
+
 function openSubmissions(submissions) {
   // Send submissions to the extension to be opened
   chrome.extension.sendMessage({
@@ -134,14 +155,14 @@ function getShortcutAction(e) {
     // Shift-R: remove submissions mode.
     case "R": {
       return () => {
-        shortcutMode = SHORTCUT_MODE.REMOVE;
+        setShortcutMode(SHORTCUT_MODE.REMOVE);
         setTimeout(() => resetShortcutMode(), 500);
       };
     }
     // V: "view" (open) submissions mode.
     case "v": {
       return () => {
-        shortcutMode = SHORTCUT_MODE.VIEW;
+        setShortcutMode(SHORTCUT_MODE.VIEW);
         setTimeout(() => resetShortcutMode(), 500);
       }
     }
@@ -242,8 +263,16 @@ function submissionsSourceByKey(eventKey) {
   return null;
 }
 
+function setShortcutMode(mode) {
+  shortcutMode = mode;
+  shortcutModeLabel.textContent = mode.labelText;
+  shortcutModeLabel.className = mode.labelClasses;
+  shortcutModeLabel.hidden = false;
+}
+
 function resetShortcutMode() {
-  shortcutMode = SHORTCUT_MODE.DEFAULT;
+  setShortcutMode(SHORTCUT_MODE.DEFAULT);
+  shortcutModeLabel.hidden = true;
 }
 
 function getSubmissionsByRating(ratingClassName) {
