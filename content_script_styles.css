@@ -25,6 +25,7 @@ div#messagecenter-submissions div.added-actions .adult-button {
 div#messagecenter-submissions div.added-actions .open-button {
   font-weight: bold;
   background-color: #88BE88;
+  color: #32513F !important;
 }
 
 div#messagecenter-submissions div.added-actions .open-all-button {
