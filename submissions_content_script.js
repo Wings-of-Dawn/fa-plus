@@ -40,41 +40,6 @@ const SHORTCUT_MODE = {
 };
 let shortcutMode = SHORTCUT_MODE.DEFAULT;
 
-function makeButton(buttonData) {
-  // Create a button element.
-  const button = document.createElement("input");
-  button.setAttribute("class", buttonData.classes);
-  button.setAttribute("type", "button");
-  button.setAttribute("value", buttonData.text);
-
-  // Add a click handler.
-  button.addEventListener("click", buttonData.handler, false);
-
-  return button;
-}
-
-function addButtons() {
-  // Create divs containing the buttons we want to add
-  const selectionButtonsTop = document.createElement("div");
-  selectionButtonsTop.setAttribute("class", ADDED_ACTIONS_DIV_CLASSES);
-  const selectionButtonsBottom = document.createElement("div");
-  selectionButtonsBottom.setAttribute("class", ADDED_ACTIONS_DIV_CLASSES);
-  ADDED_ACTIONS_BUTTONS.forEach((buttonData) => {
-    selectionButtonsTop.appendChild(makeButton(buttonData));
-    selectionButtonsBottom.appendChild(makeButton(buttonData));
-  });
-
-  // Find the "actions" divs in the messages-list form.
-  const messageForm = document.getElementById("messages-form");
-  const actionsDivs = messageForm.getElementsByClassName("actions");
-
-  // Add our row of buttons before each of the existing rows.
-  // Ordering is important! Collection will be mutated, so if we add the buttons to the top first,
-  // the bottom buttons will appear in the wrong place.
-  messageForm.insertBefore(selectionButtonsBottom, actionsDivs[1].nextSibling);
-  messageForm.insertBefore(selectionButtonsTop, actionsDivs[0]);
-}
-
 // Add the buttons to the control areas.
 addButtons();
 
@@ -100,6 +65,41 @@ getOptionValue(OPTIONS.KEYBOARD_SHORTCUTS, (enabled) => {
     document.addEventListener('keydown', handleKeyDown);
   }
 });
+
+function addButtons() {
+  // Create divs containing the buttons we want to add
+  const selectionButtonsTop = document.createElement("div");
+  selectionButtonsTop.setAttribute("class", ADDED_ACTIONS_DIV_CLASSES);
+  const selectionButtonsBottom = document.createElement("div");
+  selectionButtonsBottom.setAttribute("class", ADDED_ACTIONS_DIV_CLASSES);
+  ADDED_ACTIONS_BUTTONS.forEach((buttonData) => {
+    selectionButtonsTop.appendChild(makeButton(buttonData));
+    selectionButtonsBottom.appendChild(makeButton(buttonData));
+  });
+
+  // Find the "actions" divs in the messages-list form.
+  const messageForm = document.getElementById("messages-form");
+  const actionsDivs = messageForm.getElementsByClassName("actions");
+
+  // Add our row of buttons before each of the existing rows.
+  // Ordering is important! Collection will be mutated, so if we add the buttons to the top first,
+  // the bottom buttons will appear in the wrong place.
+  messageForm.insertBefore(selectionButtonsBottom, actionsDivs[1].nextSibling);
+  messageForm.insertBefore(selectionButtonsTop, actionsDivs[0]);
+}
+
+function makeButton(buttonData) {
+  // Create a button element.
+  const button = document.createElement("input");
+  button.setAttribute("class", buttonData.classes);
+  button.setAttribute("type", "button");
+  button.setAttribute("value", buttonData.text);
+
+  // Add a click handler.
+  button.addEventListener("click", buttonData.handler, false);
+
+  return button;
+}
 
 function openSubmissions(submissions) {
   // Send submissions to the extension to be opened
