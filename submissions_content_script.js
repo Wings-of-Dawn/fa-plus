@@ -153,19 +153,11 @@ function getShortcutAction(e) {
   // If a "mode" key is pressed, return an action that changes the current mode.
   switch (e.key) {
     // Shift-R: remove submissions mode.
-    case "R": {
-      return () => {
-        setShortcutMode(SHORTCUT_MODE.REMOVE);
-        setTimeout(() => resetShortcutMode(), 500);
-      };
-    }
+    case "R":
+      return () => setShortcutMode(SHORTCUT_MODE.REMOVE);
     // V: "view" (open) submissions mode.
-    case "v": {
-      return () => {
-        setShortcutMode(SHORTCUT_MODE.VIEW);
-        setTimeout(() => resetShortcutMode(), 500);
-      }
-    }
+    case "v":
+      return () => setShortcutMode(SHORTCUT_MODE.VIEW);
   }
 
   // Otherwise, determine a shortcut action (if any) based on the current mode.
@@ -268,10 +260,12 @@ function setShortcutMode(mode) {
   shortcutModeLabel.textContent = mode.labelText;
   shortcutModeLabel.className = mode.labelClasses;
   shortcutModeLabel.hidden = false;
+
+  setTimeout(() => resetShortcutMode(), 500);
 }
 
 function resetShortcutMode() {
-  setShortcutMode(SHORTCUT_MODE.DEFAULT);
+  shortcutMode = SHORTCUT_MODE.DEFAULT;
   shortcutModeLabel.hidden = true;
 }
 
