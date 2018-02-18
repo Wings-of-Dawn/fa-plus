@@ -49,6 +49,7 @@ const SHORTCUT_MODE = {
 };
 let shortcutMode = SHORTCUT_MODE.DEFAULT;
 let shortcutModeLabel;
+let shortcutModeTimeout;
 
 // Add the buttons to the control areas.
 addButtons();
@@ -256,17 +257,20 @@ function submissionsSourceByKey(eventKey) {
 }
 
 function setShortcutMode(mode) {
+  clearTimeout(shortcutModeTimeout);
+
   shortcutMode = mode;
   shortcutModeLabel.textContent = mode.labelText;
   shortcutModeLabel.className = mode.labelClasses;
   shortcutModeLabel.hidden = false;
 
-  setTimeout(() => resetShortcutMode(), 500);
+  shortcutModeTimeout = setTimeout(() => resetShortcutMode(), 500);
 }
 
 function resetShortcutMode() {
   shortcutMode = SHORTCUT_MODE.DEFAULT;
   shortcutModeLabel.hidden = true;
+  shortcutModeTimeout = undefined;
 }
 
 function getSubmissionsByRating(ratingClassName) {
