@@ -161,9 +161,9 @@ function getShortcutAction(e) {
 
 function getSelectShortcutAction(eventKey) {
   // If the key corresponds to a standard grouping of submissions, toggle their check-state.
-  const submissionsGetter = submissionsSourceByKey(eventKey);
-  if (submissionsGetter) {
-    return () => toggleChecked(submissionsGetter());
+  const submissionsSource = submissionsSourceByKey(eventKey);
+  if (submissionsSource) {
+    return () => toggleChecked(submissionsSource());
   }
 
   // Check for keys corresponding to other actions.
@@ -181,10 +181,10 @@ function getSelectShortcutAction(eventKey) {
 
 function getViewShortcutAction(eventKey) {
   // If the key corresponds to a standard grouping of submissions, open them.
-  const submissionsGetter = submissionsSourceByKey(eventKey);
-  if (submissionsGetter) {
+  const submissionsSource = submissionsSourceByKey(eventKey);
+  if (submissionsSource) {
     return () => {
-      openSubmissions(submissionsGetter());
+      openSubmissions(submissionsSource());
       resetShortcutMode();
     };
   }
@@ -196,11 +196,11 @@ function getViewShortcutAction(eventKey) {
 function getRemoveShortcutAction(eventKey) {
   // If the key corresponds to a standard grouping of submissions, check them (if not already
   // checked) and click the "remove checked" button.
-  const submissionsGetter = submissionsSourceByKey(eventKey);
-  if (submissionsGetter) {
+  const submissionsSource = submissionsSourceByKey(eventKey);
+  if (submissionsSource) {
     return () => {
       // Locate the specified set of submissions first.
-      submissions = submissionsGetter();
+      submissions = submissionsSource();
 
       // Uncheck all submissions, to avoid removing any not specified by the shortcut.
       setChecked(getAllSubmissions(), false);
