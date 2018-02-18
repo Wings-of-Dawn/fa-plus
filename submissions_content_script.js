@@ -198,6 +198,7 @@ function getViewShortcutAction(eventKey) {
   const submissionsSource = submissionsSourceByKey(eventKey);
   if (submissionsSource) {
     return () => {
+      appendShortcutLabelText(submissionsSource.label);
       openSubmissions(submissionsSource.getter());
       resetShortcutMode();
     };
@@ -213,6 +214,8 @@ function getRemoveShortcutAction(eventKey) {
   const submissionsSource = submissionsSourceByKey(eventKey);
   if (submissionsSource) {
     return () => {
+      appendShortcutLabelText(submissionsSource.label);
+
       // Locate the specified set of submissions first.
       submissions = submissionsSource.getter();
 
@@ -279,13 +282,23 @@ function setShortcutMode(mode) {
   shortcutModeLabel.className = mode.labelClasses;
   shortcutModeLabel.hidden = false;
 
-  shortcutModeTimeout = setTimeout(() => resetShortcutMode(), 500);
+  // Automatically return to the default shortcut-mode after a short delay.
+  shortcutModeTimeout = setTimeout(() => {
+    shortcutMode = SHORTCUT_MODE.DEFAULT;
+    shortcutModeLabel.hidden = true;
+  }, 500);
+}
+
+function appendShortcutLabelText(text) {
+  shortcutModeLabel.textContent = shortcutModeLabel.textContent + " " + text;
 }
 
 function resetShortcutMode() {
+  clearTimeout(shortcutModeTimeout);
   shortcutMode = SHORTCUT_MODE.DEFAULT;
-  shortcutModeLabel.hidden = true;
-  shortcutModeTimeout = undefined;
+
+  // Leave the mode-label visible for a few moments.
+  shortcutModeTimeout = setTimeout(() => shortcutModeLabel.hidden = true, 1000);
 }
 
 function getSubmissionsByRating(ratingClassName) {
