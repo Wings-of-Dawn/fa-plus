@@ -177,7 +177,7 @@ function getSelectShortcutAction(eventKey) {
   // If the key corresponds to a standard grouping of submissions, toggle their check-state.
   const submissionsSource = submissionsSourceByKey(eventKey);
   if (submissionsSource) {
-    return () => toggleChecked(submissionsSource());
+    return () => toggleChecked(submissionsSource.getter());
   }
 
   // Check for keys corresponding to other actions.
@@ -198,7 +198,7 @@ function getViewShortcutAction(eventKey) {
   const submissionsSource = submissionsSourceByKey(eventKey);
   if (submissionsSource) {
     return () => {
-      openSubmissions(submissionsSource());
+      openSubmissions(submissionsSource.getter());
       resetShortcutMode();
     };
   }
@@ -214,7 +214,7 @@ function getRemoveShortcutAction(eventKey) {
   if (submissionsSource) {
     return () => {
       // Locate the specified set of submissions first.
-      submissions = submissionsSource();
+      submissions = submissionsSource.getter();
 
       // Uncheck all submissions, to avoid removing any not specified by the shortcut.
       setChecked(getAllSubmissions(), false);
@@ -243,15 +243,30 @@ function getRemoveShortcutAction(eventKey) {
 function submissionsSourceByKey(eventKey) {
   switch (eventKey) {
     case "e":
-      return () => getAllSubmissions();
+      return {
+        label: "all",
+        getter: () => getAllSubmissions()
+      };
     case "c":
-      return () => getCheckedSubmissions();
+      return {
+        label: "checked",
+        getter: () => getCheckedSubmissions()
+      };
     case "g":
-      return () => getSubmissionsByRating(SUBMISSION_RATINGS.GENERAL);
+      return {
+        label: "general",
+        getter: () => getSubmissionsByRating(SUBMISSION_RATINGS.GENERAL)
+      };
     case "m":
-      return () => getSubmissionsByRating(SUBMISSION_RATINGS.MATURE);
+      return {
+        label: "mature",
+        getter: () => getSubmissionsByRating(SUBMISSION_RATINGS.MATURE)
+      };
     case "a":
-      return () => getSubmissionsByRating(SUBMISSION_RATINGS.ADULT);
+      return {
+        label: "adult",
+        getter: () => getSubmissionsByRating(SUBMISSION_RATINGS.ADULT)
+      };
   }
   return null;
 }
