@@ -1,14 +1,20 @@
 const MIN_TAB_COUNT = 1;
 const MAX_TAB_COUNT = 72;
 
-window.addEventListener("load", init, false);
+window.addEventListener("load", () => init());
 
 function init() {
   // Restore settings values from storage.
   restoreOptions();
 
+  // Add a tooltip for keyboard shortcuts.
+  document.getElementById("shortcuts-tooltip").addEventListener("click", () => {
+    const tooltipContent = document.getElementById("shortcuts-tooltip-content");
+    tooltipContent.hidden = !tooltipContent.hidden;
+  });
+
   // Add an event listener to the save button.
-  document.getElementById("savebutton").addEventListener("click", saveOptions, false);
+  document.getElementById("savebutton").addEventListener("click", () => saveOptions());
 }
 
 // Populates an element on the options page with a value loaded from storage.
