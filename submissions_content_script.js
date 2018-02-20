@@ -74,10 +74,10 @@ chrome.extension.onMessage.addListener((message, sender, sendResponse) => {
 getOptionValue(OPTIONS.KEYBOARD_SHORTCUTS, (enabled) => {
   if (enabled) {
     document.addEventListener('keydown', handleKeyDown);
-  }
 
-  // Create a floating element to show the current shortcut mode.
-  shortcutModeLabel = createAndAddModeLabel();
+    // Create a floating element to show the current shortcut mode.
+    shortcutModeLabel = createAndAddModeLabel();
+  }
 });
 
 function addButtons() {
