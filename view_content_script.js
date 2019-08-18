@@ -1,6 +1,7 @@
 const SUBMISSION_ELEMENT_ID = "submissionImg";
 
 const ADD_FAVORITE_LINK_PATTERN = RegExp("/fav/");
+const REMOVE_FAVORITE_LINK_PATTERN = RegExp("/unfav/");
 const DOWNLOAD_LINK_TEXT = "Download";
 
 function centerViewOnSubmission() {
@@ -55,6 +56,8 @@ function getShortcutAction(eventKey) {
       return () => getDownloadLink().click();
     case "f":
       return () => clickLinkIfPresent(ADD_FAVORITE_LINK_PATTERN);
+    case "F":
+      return () => clickLinkIfPresent(REMOVE_FAVORITE_LINK_PATTERN);
     case "j":
       return () => document.getElementsByClassName('next')[0].click();
     case "k":
