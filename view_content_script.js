@@ -1,6 +1,6 @@
 const SUBMISSION_ELEMENT_ID = "submissionImg";
 
-const FAVORITE_LINK_PATTERN = RegExp("/fav/");
+const ADD_FAVORITE_LINK_PATTERN = RegExp("/fav/");
 const DOWNLOAD_LINK_TEXT = "Download";
 
 function centerViewOnSubmission() {
@@ -54,7 +54,7 @@ function getShortcutAction(eventKey) {
     case "d":
       return () => getDownloadLink().click();
     case "f":
-      return () => getFavoriteLink().click();
+      return () => clickLinkIfPresent(ADD_FAVORITE_LINK_PATTERN);
     case "j":
       return () => document.getElementsByClassName('next')[0].click();
     case "k":
@@ -65,9 +65,11 @@ function getShortcutAction(eventKey) {
   return null;
 }
 
-function getFavoriteLink() {
-  const favLinks = getAllLinks().filter((link) => FAVORITE_LINK_PATTERN.test(link.href));
-  return favLinks[0];
+function clickLinkIfPresent(linkPattern) {
+  const matchingLinks = getAllLinks().filter((link) => linkPattern.test(link.href));
+  if (matchingLinks.length > 0) {
+    matchingLinks[0].click();
+  }
 }
 
 function getDownloadLink() {
