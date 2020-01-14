@@ -1,39 +1,19 @@
-div#messagecenter-submissions div.added-actions {
-  margin: 7px auto;
-  width: 700px;
-  text-align: center;
-  overflow: hidden;
-  clear: both;
+#messagecenter-new-submissions .section-options.actions .general-button {
+  background-color: #616161;
 }
 
-div#messagecenter-submissions div.added-actions input[type="button"] {
-  cursor: pointer;
+#messagecenter-new-submissions .section-options.actions .mature-button {
+  background-color: #697CC1;
 }
 
-div#messagecenter-submissions div.added-actions .general-button {
-  color: #616161;
+#messagecenter-new-submissions .section-options.actions .adult-button {
+  background-color: #971C1C;
 }
 
-div#messagecenter-submissions div.added-actions .mature-button {
-  color: #697CC1;
-}
-
-div#messagecenter-submissions div.added-actions .adult-button {
-  color: #971C1C;
-}
-
-div#messagecenter-submissions div.added-actions .open-button {
+#messagecenter-new-submissions .section-options.actions .open-button {
   font-weight: bold;
   background-color: #88BE88;
   color: #32513F !important;
-}
-
-div#messagecenter-submissions div.added-actions .open-all-button {
-  float: left;
-}
-
-div#messagecenter-submissions div.added-actions .open-checked-button {
-  float: right;
 }
 
 div#shortcut-mode-label {
