@@ -13,22 +13,22 @@ const ADDED_ACTIONS_BUTTONS = [
   },
   {
     classes: "button general-button",
-    text: "Check/Uncheck General",
+    text: "Select/Deselect General",
     handler: () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.GENERAL))
   },
   {
     classes: "button mature-button",
-    text: "Check/Uncheck Mature",
+    text: "Select/Deselect Mature",
     handler: () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.MATURE))
   },
   {
     classes: "button adult-button",
-    text: "Check/Uncheck Adult",
+    text: "Select/Deselect Adult",
     handler: () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.ADULT))
   },
   {
     classes: "button open-button open-checked-button",
-    text: "Open Checked",
+    text: "Open Selected",
     handler: () => openSubmissions(getCheckedSubmissions())
   }
 ];
@@ -81,33 +81,20 @@ getOptionValue(OPTIONS.KEYBOARD_SHORTCUTS, (enabled) => {
 });
 
 function addButtons() {
-  // Create divs containing the buttons we want to add
-  const selectionButtonsTop = document.createElement("div");
-  selectionButtonsTop.setAttribute("class", ADDED_ACTIONS_DIV_CLASSES);
-  const selectionButtonsBottom = document.createElement("div");
-  selectionButtonsBottom.setAttribute("class", ADDED_ACTIONS_DIV_CLASSES);
-  ADDED_ACTIONS_BUTTONS.forEach((buttonData) => {
-    selectionButtonsTop.appendChild(makeButton(buttonData));
-    selectionButtonsBottom.appendChild(makeButton(buttonData));
-  });
+  // Find the "actions"  section at the bottom of the page.
+  const actionsSection = document.querySelector('.section-options.actions');
 
-  // Find the "actions" divs in the messages-list form.
-  const messageForm = document.getElementById("messages-form");
-  const actionsDivs = messageForm.getElementsByClassName("actions");
-
-  // Add our row of buttons before each of the existing rows.
-  // Ordering is important! Collection will be mutated, so if we add the buttons to the top first,
-  // the bottom buttons will appear in the wrong place.
-  messageForm.insertBefore(selectionButtonsBottom, actionsDivs[1].nextSibling);
-  messageForm.insertBefore(selectionButtonsTop, actionsDivs[0]);
+  ADDED_ACTIONS_BUTTONS
+      .map((buttonData) => makeButton(buttonData))
+      .forEach((button) => actionsSection.prepend(button));
 }
 
 function makeButton(buttonData) {
   // Create a button element.
-  const button = document.createElement("input");
+  const button = document.createElement("button");
   button.setAttribute("class", buttonData.classes);
   button.setAttribute("type", "button");
-  button.setAttribute("value", buttonData.text);
+  button.textContent = buttonData.text;
 
   // Add a click handler.
   button.addEventListener("click", buttonData.handler, false);
