@@ -4,11 +4,11 @@
   "version": "1.1.0",
   "description": "Minor enhancements to improve the user experience of browsing furaffinity.net",
   "icons": {
-    "48": "FAPlusIcon_48.png",
-    "128": "FAPlusIcon_128.png"
+    "48": "img/FAPlusIcon_48.png",
+    "128": "img/FAPlusIcon_128.png"
   },
   "action": {
-    "default_icon": "FAIcon.png",
+    "default_icon": "img/FAIcon.png",
     "default_title": "Click to open all submissions"
   }
 }
