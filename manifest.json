@@ -1,45 +1,14 @@
 {
-  "manifest_version": 2,
-  "name": "Fur Affinity Plus",
-  "version": "1.0.0",
+  "manifest_version": 3,
+  "name": "FurAffinity Plus",
+  "version": "1.1.0",
   "description": "Minor enhancements to improve the user experience of browsing furaffinity.net",
   "icons": {
     "48": "FAPlusIcon_48.png",
     "128": "FAPlusIcon_128.png"
   },
-  "background": {
-    "scripts": ["options.js", "background.js"]
-  },
-  "page_action": {
+  "action": {
     "default_icon": "FAIcon.png",
     "default_title": "Click to open all submissions"
-  },
-  "content_scripts": [
-    {
-      "matches":  [
-        "http://*.furaffinity.net/msg/submissions*",
-        "https://*.furaffinity.net/msg/submissions*"
-      ],
-      "css": ["content_script_styles.css"],
-      "js": ["options.js", "submissions_content_script.js"]
-    },
-    {
-      "matches": [
-        "http://*.furaffinity.net/view*",
-        "https://*.furaffinity.net/view*"
-      ],
-      "js": ["options.js", "view_content_script.js"]
-    }
-  ],
-  "options_ui": {
-    "page": "options_page.html",
-    "chrome_style": true
-  },
-  "permissions": [
-    "storage",
-    "tabs",
-    "http://*.furaffinity.net/*",
-    "https://*.furaffinity.net/*"
-  ]
+  }
 }
-
