@@ -8,26 +8,31 @@
     "128": "img/FAPlusIcon_128.png"
   },
   "action": {
-    "default_icon": "img/FAIcon.png",
-    "default_title": "Click to open all submissions"
+    "default_icon": "img/FAPlusIcon_48.png",
+    "default_title": "FurAffinity Plus"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
+      "matches": [
+        "https://www.furaffinity.net/msg/submissions/*"
+      ],
       "js": [
         "scripts/submissions_content_script.js"
       ],
       "css": [
         "styles/content_script_styles.css"
-      ],
-      "matches": [
-        "https://www.furaffinity.net/msg/submissions/*"
       ]
     }
   ],
   "permissions": [
     "activeTab",
     "scripting",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "options_page": "options/options_page.html"
 }

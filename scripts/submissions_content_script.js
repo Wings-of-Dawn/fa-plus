@@ -9,7 +9,7 @@ const ADDED_ACTIONS_BUTTONS = [
   {
     classes: "button open-button open-all-button",
     text: "Open All",
-    // handler: () => openSubmissions(getAllSubmissions())
+    handler: () => openSubmissions(getAllSubmissions()),
   },
   {
     classes: "button general-button",
@@ -54,22 +54,6 @@ let shortcutModeTimeout;
 // // Add the buttons to the control areas.
 addButtons();
 
-// // Tell the extension to show the page action icon.
-// chrome.extension.sendMessage({type: "showPageAction"});
-
-// // Listen for messages from the extension.
-// chrome.extension.onMessage.addListener((message, sender, sendResponse) => {
-//   switch (message.type) {
-//     case "getSubmissions":
-//       // Page action clicked: open all submissions on the page.
-//       openSubmissions(getAllSubmissions());
-//       break;
-//     default:
-//       console.warn("unknown message type received: " + message.type);
-//       break;
-//   }
-// });
-
 // // If enabled, install handlers for keyboard shortcuts.
 // getOptionValue(OPTIONS.KEYBOARD_SHORTCUTS, (enabled) => {
 //   if (enabled) {
@@ -99,7 +83,7 @@ function makeButton(buttonData) {
   button.textContent = buttonData.text;
 
   // Add a click handler.
-  // button.addEventListener("click", buttonData.handler, false);
+  button.addEventListener("click", buttonData.handler, false);
 
   return button;
 }
@@ -112,13 +96,13 @@ function makeButton(buttonData) {
 //   return label;
 // }
 
-// function openSubmissions(submissions) {
-//   // Send submissions to the extension to be opened
-//   chrome.extension.sendMessage({
-//     type: "openSubmissions",
-//     submissions: submissions.map((container) => getSubmissionFromContainer(container))
-//   });
-// }
+async function openSubmissions(submissions) {
+  // Send submissions to the extension to be opened
+  await chrome.runtime.sendMessage({
+    type: "openSubmissions",
+    submissions: submissions.map(container => getSubmissionFromContainer(container))
+  });
+}
 
 // function handleKeyDown(e) {
 //   // Skip events already handled, events with a modifier key (other than shift) held, and events
@@ -294,9 +278,9 @@ function makeButton(buttonData) {
 //   return Array.from(document.getElementsByClassName(ratingClassName));
 // }
 
-// function getAllSubmissions() {
-//   return Array.from(document.getElementsByTagName("figure"));
-// }
+function getAllSubmissions() {
+  return Array.from(document.getElementsByTagName("figure"));
+}
 
 // function getCheckedSubmissions() {
 //   return getAllSubmissions().filter((container) => getCheckboxFromContainer(container).checked);
@@ -319,19 +303,19 @@ function makeButton(buttonData) {
 //       .forEach((checkbox) => checkbox.click());
 // }
 
-// function getSubmissionFromContainer(containerElement) {
-//   const foundReferences = containerElement.getElementsByTagName("a");
-//   const count = foundReferences.length;
-//   if (count !== 3) {
-//     console.warn("unexpected number of anchor tags in container: " + count + " (expected 3)");
-//     if (count < 1) {
-//       return null;
-//     }
-//   }
+function getSubmissionFromContainer(containerElement) {
+  const foundReferences = containerElement.getElementsByTagName("a");
+  const count = foundReferences.length;
+  if (count !== 3) {
+    console.warn("unexpected number of anchor tags in container: " + count + " (expected 3)");
+    if (count < 1) {
+      return null;
+    }
+  }
 
-//   // We expect the first two anchors to refer to the submission, and the third to its author.
-//   return foundReferences[0].href;
-// }
+  // We expect the first two anchors to refer to the submission, and the third to its author.
+  return foundReferences[0].href;
+}
 
 // function getCheckboxFromContainer(containerElement) {
 //   const checkboxInputs =
