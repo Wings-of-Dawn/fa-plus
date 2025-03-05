@@ -6,8 +6,8 @@ The extension is not published in the Chrome web store, as doing so requires a p
 
 ## Installation
 
-1. Download the code from GitHub and unarchive the `.zip` file to an out-of-the-way location (i.e., I don't suggest leaving it in your "Downloads" directory; the files will need to stay on your computer for the extension to work)
-    1. If you're familiar with git, you can clone the repo, instead
+1. Click "Download ZIP" under GitHub's "Code" button and unarchive the file to an out-of-the-way location (i.e., I don't suggest leaving it in your "Downloads" directory; the files will need to stay on your computer for the extension to work)
+    1. If you're familiar with `git`, you can clone the repo, instead
 1. In your browser, open the Extensions page (e.g., type chrome://extensions in the navbar)
 1. Enable "developer mode" via the toggle at the top-right of the page
 1. Click "Load Unpacked", and select the folder containing the code
