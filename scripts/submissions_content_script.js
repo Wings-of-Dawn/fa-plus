@@ -14,22 +14,22 @@ const ADDED_ACTIONS_BUTTONS = [
   {
     classes: "button general-button",
     text: "Select/Deselect General",
-    // handler: () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.GENERAL))
+    handler: () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.GENERAL)),
   },
   {
     classes: "button mature-button",
     text: "Select/Deselect Mature",
-    // handler: () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.MATURE))
+    handler: () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.MATURE)),
   },
   {
     classes: "button adult-button",
     text: "Select/Deselect Adult",
-    // handler: () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.ADULT))
+    handler: () => toggleChecked(getSubmissionsByRating(SUBMISSION_RATINGS.ADULT)),
   },
   {
     classes: "button open-button open-checked-button",
     text: "Open Selected",
-    // handler: () => openSubmissions(getCheckedSubmissions())
+    handler: () => openSubmissions(getCheckedSubmissions()),
   }
 ];
 
@@ -274,34 +274,34 @@ async function openSubmissions(submissions) {
 //   shortcutModeTimeout = setTimeout(() => shortcutModeLabel.hidden = true, 1000);
 // }
 
-// function getSubmissionsByRating(ratingClassName) {
-//   return Array.from(document.getElementsByClassName(ratingClassName));
-// }
+function getSubmissionsByRating(ratingClassName) {
+  return Array.from(document.getElementsByClassName(ratingClassName));
+}
 
 function getAllSubmissions() {
   return Array.from(document.getElementsByTagName("figure"));
 }
 
-// function getCheckedSubmissions() {
-//   return getAllSubmissions().filter((container) => getCheckboxFromContainer(container).checked);
-// }
+function getCheckedSubmissions() {
+  return getAllSubmissions().filter((container) => getCheckboxFromContainer(container).checked);
+}
 
-// function allChecked(submissions) {
-//   return submissions.every((container) => getCheckboxFromContainer(container).checked);
-// }
+function allChecked(submissions) {
+  return submissions.every((container) => getCheckboxFromContainer(container).checked);
+}
 
-// function toggleChecked(submissions) {
-//   setChecked(submissions, !allChecked(submissions));
-// }
+function toggleChecked(submissions) {
+  setChecked(submissions, !allChecked(submissions));
+}
 
-// function setChecked(submissions, targetState) {
-//   // Rather than setting the checkbox states directly, click the checkboxes that don't match the
-//   // desired state, to trigger JS handlers properly.
-//   submissions
-//       .map((container) => getCheckboxFromContainer(container))
-//       .filter((checkbox) => checkbox.checked !== targetState)
-//       .forEach((checkbox) => checkbox.click());
-// }
+function setChecked(submissions, targetState) {
+  // Rather than setting the checkbox states directly, click the checkboxes that don't match the
+  // desired state, to trigger JS handlers properly.
+  submissions
+    .map((container) => getCheckboxFromContainer(container))
+    .filter((checkbox) => checkbox.checked !== targetState)
+    .forEach((checkbox) => checkbox.click());
+}
 
 function getSubmissionFromContainer(containerElement) {
   const foundReferences = containerElement.getElementsByTagName("a");
@@ -317,16 +317,16 @@ function getSubmissionFromContainer(containerElement) {
   return foundReferences[0].href;
 }
 
-// function getCheckboxFromContainer(containerElement) {
-//   const checkboxInputs =
-//       Array.from(containerElement.getElementsByTagName("input"))
-//           .filter((inputElement) => inputElement.type.toLowerCase() === "checkbox");
-//   const count = checkboxInputs.length;
-//   if (count !== 1) {
-//     console.warn("unexpected number of checkbox elements in container: " + count + " (expected 1)");
-//     if (count < 1) {
-//       return null;
-//     }
-//   }
-//   return checkboxInputs[0];
-// }
+function getCheckboxFromContainer(containerElement) {
+  const checkboxInputs =
+    Array.from(containerElement.getElementsByTagName("input"))
+      .filter((inputElement) => inputElement.type.toLowerCase() === "checkbox");
+  const count = checkboxInputs.length;
+  if (count !== 1) {
+    console.warn("unexpected number of checkbox elements in container: " + count + " (expected 1)");
+    if (count < 1) {
+      return null;
+    }
+  }
+  return checkboxInputs[0];
+}
