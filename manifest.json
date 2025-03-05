@@ -28,6 +28,17 @@
       ]
     }
   ],
+  "web_accessible_resources": [
+    {
+      "matches": [
+        "https://www.furaffinity.net/*"
+      ],
+      "resources": [
+        "options/options.js",
+        "scripts/submissions_content_module.js"
+      ]
+    }
+  ],
   "permissions": [
     "activeTab",
     "scripting",
