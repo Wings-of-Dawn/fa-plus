@@ -10,7 +10,23 @@
   "action": {
     "default_icon": "img/FAIcon.png",
     "default_title": "Click to open all submissions"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "scripts/submissions_content_script.js"
+      ],
+      "css": [
+        "styles/content_script_styles.css"
+      ],
+      "matches": [
+        "https://www.furaffinity.net/msg/submissions/*"
+      ]
+    }
+  ],
   "permissions": [
+    "activeTab",
+    "scripting",
     "storage"
   ],
   "options_page": "options/options_page.html"
