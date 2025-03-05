@@ -10,5 +10,8 @@
   "action": {
     "default_icon": "img/FAIcon.png",
     "default_title": "Click to open all submissions"
-  }
+  "permissions": [
+    "storage"
+  ],
+  "options_page": "options/options_page.html"
 }

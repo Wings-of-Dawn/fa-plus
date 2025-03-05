@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>FurAffinity Plus Options</title>
+  <link rel="stylesheet" type="text/css" href="options_page.css">
+</head>
+
+<body>
+  <p>
+    Number of submissions to load at a time: <input type="text" title="Tabs to load" size="2" maxLength="2" value="3"
+      id="load-count" /> <span class="error-text" id="load-count-error"></span><br />
+    <span class="hint-text">(decrease if performance suffers)</span>
+  </p>
+  <p>
+    <input type="checkbox" title="Auto-open" checked="false" id="auto-open" /> Automatically open the next submission
+    when a tab finishes loading<br />
+    Maximum number of open submission tabs: <input type="text" title="Maximum tabs to open" size="2" maxLength="2"
+      value="5" id="tab-count" /> <span class="error-text" id="tab-count-error"></span>
+  </p>
+  <p>
+    <input type="checkbox" title="Auto-center" checked="true" id="auto-center" /> Automatically center newly-opened
+    submissions in their tabs
+  </p>
+  <p>
+    <input type="checkbox" title="Keyboard Shortcuts" checked="false" id="shortcuts" /> Enable keyboard shortcuts
+    <span id="shortcuts-tooltip" class="tooltip">?</span>
+  <div id="shortcuts-tooltip-content" class="tooltip-content" hidden="true">
+    Submissions list page shortcuts:
+    <div class="shortcuts-list submissions-shortcuts">
+      <div><span class="shortcut-key"><b>g</b>/<b>m</b>/<b>a</b></span> <span class="shortcut-action">check/uncheck
+          <b>g</b>eneral/<b>m</b>ature/<b>a</b>dult</span></div>
+      <div><span class="shortcut-key"><b>e</b></span> <span class="shortcut-action">check/uncheck <b>e</b>verything
+          (all)</span></div>
+      <div><span class="shortcut-key"><b>n</b></span> <span class="shortcut-action">u<b>n</b>check all</span></div>
+      <div><span class="shortcut-key"><b>i</b></span> <span class="shortcut-action"><b>i</b>nvert selection</span></div>
+      <div><span class="shortcut-key"><b>v</b> <span class="shortcut-join">then</span> <b>g</b>/<b>m</b>/<b>a</b></span>
+        <span class="shortcut-action"><b>v</b>iew (open) <b>g</b>eneral/<b>m</b>ature/<b>a</b>dult</span>
+      </div>
+      <div><span class="shortcut-key"><b>v</b> <span class="shortcut-join">then</span> <b>e</b></span> <span
+          class="shortcut-action"><b>v</b>iew <b>e</b>verything (all)</span></div>
+      <div><span class="shortcut-key"><b>v</b> <span class="shortcut-join">then</span> <b>c</b></span> <span
+          class="shortcut-action"><b>v</b>iew <b>c</b>hecked submissions</span></div>
+      <div><span class="shortcut-key"><b>shift+r</b> <span class="shortcut-join">then</span>
+          <b>g</b>/<b>m</b>/<b>a</b></span> <span class="shortcut-action"><b>r</b>emove
+          <b>g</b>eneral/<b>m</b>ature/<b>a</b>dult</span></div>
+      <div><span class="shortcut-key"><b>shift+r</b> <span class="shortcut-join">then</span> <b>e</b></span> <span
+          class="shortcut-action"><b>r</b>emove <b>e</b>verything (all)</span></div>
+      <div><span class="shortcut-key"><b>shift+r</b> <span class="shortcut-join">then</span> <b>c</b></span> <span
+          class="shortcut-action"><b>r</b>emove <b>c</b>hecked submissions</span></div>
+      <div><span class="shortcut-key"><b>shift+r</b> <span class="shortcut-join">then</span> <b>n</b></span> <span
+          class="shortcut-action"><b>n</b>uke submissions</span></div>
+    </div>
+    Submission view page shortcuts:
+    <div class="shortcuts-list view-shortcuts">
+      <div><span class="shortcut-key"><b>d</b></span> <span class="shortcut-action"> <b>d</b>ownload submission</span>
+      </div>
+      <div><span class="shortcut-key"><b>f</b></span> <span class="shortcut-action"> <b>f</b>avorite submission</span>
+      </div>
+      <div><span class="shortcut-key"><b>shift+f</b></span> <span class="shortcut-action"> un<b>f</b>avorite
+          submission</span></div>
+      <div><span class="shortcut-key"><b>j</b></span> <span class="shortcut-action"> next submission</span></div>
+      <div><span class="shortcut-key"><b>k</b></span> <span class="shortcut-action"> previous submission</span></div>
+      <div><span class="shortcut-key"><b>v</b></span> <span class="shortcut-action"> change <b>v</b>iew mode</span>
+      </div>
+    </div>
+  </div>
+  </p>
+  <button id="savebutton" label="Save">Save</button>
+  <p id="status"></p>
+
+  <script type="module" src="options_page.js"></script>
+</body>
+
+</html>
