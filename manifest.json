@@ -26,6 +26,14 @@
       "css": [
         "styles/content_script_styles.css"
       ]
+    },
+    {
+      "matches": [
+        "https://www.furaffinity.net/view/*"
+      ],
+      "js": [
+        "scripts/view_content_script.js"
+      ]
     }
   ],
   "web_accessible_resources": [
@@ -35,7 +43,8 @@
       ],
       "resources": [
         "options/options.js",
-        "scripts/submissions_content_module.js"
+        "scripts/submissions_content_module.js",
+        "scripts/view_content_module.js"
       ]
     }
   ],
